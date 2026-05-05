@@ -12,7 +12,8 @@ async function toggleRecording() {
 
 async function startRecording() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
@@ -24,8 +25,13 @@ async function startRecording() {
         document.getElementById("mic-btn").classList.add("recording");
         document.getElementById("mic-btn").innerText = "⏹";
         document.getElementById("status").innerText = "Recording... press again to stop";
+
+        const waveform = document.getElementById("waveform");
+        if (waveform) waveform.style.display = "flex";
+
     } catch (err) {
-        document.getElementById("status").innerText = "Microphone access denied!";
+        console.error("Mic error:", err);
+        document.getElementById("status").innerText = "Mic error: " + err.name + " - " + err.message;
     }
 }
 
@@ -33,10 +39,19 @@ function stopRecording() {
     mediaRecorder.stop();
     mediaRecorder.stream.getTracks().forEach(track => track.stop());
     isRecording = false;
+
+    const waveform = document.getElementById("waveform");
+    if (waveform) waveform.style.display = "none";
+
     document.getElementById("mic-btn").classList.remove("recording");
     document.getElementById("mic-btn").classList.add("loading");
     document.getElementById("mic-btn").innerText = "⏳";
-    document.getElementById("status").innerHTML = 'Thinking <div class="dots"><span>●</span><span>●</span><span>●</span></div>';
+
+    const thinking = document.getElementById("thinking");
+    if (thinking) thinking.style.display = "flex";
+
+    const status = document.getElementById("status");
+    if (status) status.style.display = "none";
 }
 
 async function sendAudio() {
@@ -52,12 +67,30 @@ async function sendAudio() {
 
         const data = await response.json();
 
+        const thinking = document.getElementById("thinking");
+        if (thinking) thinking.style.display = "none";
+
+        const status = document.getElementById("status");
+        if (status) status.style.display = "block";
+
         addMessage("student", data.student_text);
         addMessage("coach", data.coach_reply);
-        playAudio(data.audio_url);
+
+        const speaking = document.getElementById("speaking");
+        if (speaking) speaking.style.display = "flex";
+        if (status) status.style.display = "none";
+
+        await playAudio(data.audio_url);
+
+        if (speaking) speaking.style.display = "none";
+        if (status) status.style.display = "block";
 
     } catch (err) {
+        console.error("Send error:", err);
         document.getElementById("status").innerText = "Something went wrong. Try again!";
+
+        const thinking = document.getElementById("thinking");
+        if (thinking) thinking.style.display = "none";
     } finally {
         document.getElementById("mic-btn").classList.remove("loading");
         document.getElementById("mic-btn").innerText = "🎤";
@@ -78,8 +111,15 @@ function addMessage(role, text) {
 }
 
 function playAudio(audioUrl) {
-    const audio = new Audio(audioUrl + "?t=" + Date.now());
-    audio.play();
+    return new Promise((resolve) => {
+        const audio = new Audio(audioUrl + "?t=" + Date.now());
+        audio.onended = resolve;
+        audio.onerror = resolve;
+        audio.play().catch(err => {
+            console.error("Audio play error:", err);
+            resolve();
+        });
+    });
 }
 
 async function resetSession() {

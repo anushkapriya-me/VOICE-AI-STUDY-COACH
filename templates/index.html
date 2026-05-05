@@ -18,11 +18,35 @@
             </div>
         </div>
 
+        <div id="waveform" style="display:none">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+
+        <div id="thinking" style="display:none">
+            <div class="thinking-spinner"></div>
+            <span class="thinking-text">Coach is thinking...</span>
+        </div>
+
+        <div id="speaking" style="display:none">
+            <div class="speak-bar"></div>
+            <div class="speak-bar"></div>
+            <div class="speak-bar"></div>
+            <div class="speak-bar"></div>
+            <div class="speak-bar"></div>
+            <span class="speaking-text">Coach is speaking...</span>
+        </div>
+
         <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
         <div class="status" id="status">Press the button and speak</div>
         <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="/static/script.js?v=3"></script>
 </body>
 </html>
