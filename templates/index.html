@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice AI Study Coach</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Voice AI Study Coach</h1>
+        <p class="subtitle">Ask me anything — math, science, history, programming and more</p>
+
+        <div class="chat-box" id="chat-box">
+            <div class="message coach">
+                <div class="label">Coach</div>
+                <div class="text">Hello! I'm your AI study coach. I can help you with any subject. Press the mic button and ask me anything! 🎓</div>
+            </div>
+        </div>
+
+        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
+        <div class="status" id="status">Press the button and speak</div>
+        <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
