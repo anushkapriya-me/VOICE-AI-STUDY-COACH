@@ -2,3 +2,4 @@ venv/
 temp_input.wav 
 __pycache__/ 
 .env 
+static/reply.wav 
