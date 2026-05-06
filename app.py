@@ -9,7 +9,6 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Setup clients
 print("Setting up AI clients...")
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 cartesia_client = Cartesia(api_key=os.getenv("CARTESIA_API_KEY"))
@@ -29,11 +28,9 @@ Your rules:
 conversation_history = []
 
 def save_wav(raw_audio, filename):
-    """Save raw PCM audio as proper WAV file"""
     sample_rate = 22050
     num_channels = 1
     bits_per_sample = 16
-
     with open(filename, "wb") as f:
         f.write(b'RIFF')
         f.write(struct.pack('<I', 36 + len(raw_audio)))
@@ -62,20 +59,33 @@ def chat():
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
 
-    # Save temporarily
-    with open("temp_input.wav", "wb") as f:
+    # Check if audio is too short
+    if len(audio_bytes) < 1000:
+        return jsonify({"error": "Audio too short"}), 400
+
+    # Save temporarily as webm
+    with open("temp_input.webm", "wb") as f:
         f.write(audio_bytes)
 
-    # Transcribe with Groq Whisper (fast!)
-    with open("temp_input.wav", "rb") as audio:
-        transcription = groq_client.audio.transcriptions.create(
-            model="whisper-large-v3-turbo",
-            file=audio,
-        )
-    student_text = transcription.text.strip()
+    # Transcribe with Groq Whisper
+    try:
+        with open("temp_input.webm", "rb") as audio:
+            transcription = groq_client.audio.transcriptions.create(
+                model="whisper-large-v3-turbo",
+                file=audio,
+            )
+        student_text = transcription.text.strip()
+    except Exception as e:
+        print(f"Transcription error: {e}")
+        return jsonify({"error": "Could not transcribe audio"}), 500
+
     print(f"Student said: {student_text}")
 
-    # Add to history and get Groq reply
+    # Skip empty transcriptions
+    if not student_text:
+        return jsonify({"error": "No speech detected"}), 400
+
+    # Add to history and get reply
     conversation_history.append({
         "role": "user",
         "content": student_text
@@ -95,7 +105,7 @@ def chat():
     })
     print(f"Coach: {coach_reply}")
 
-    # Convert to speech with Cartesia
+    # Convert to speech
     tts_response = cartesia_client.tts.generate(
         model_id="sonic-2",
         transcript=coach_reply,
@@ -107,8 +117,6 @@ def chat():
         },
     )
     raw_audio = tts_response.read()
-
-    # Save as proper WAV
     save_wav(raw_audio, "static/reply.wav")
 
     return jsonify({

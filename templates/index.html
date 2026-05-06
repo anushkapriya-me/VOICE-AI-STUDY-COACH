@@ -14,7 +14,7 @@
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
-                <div class="text">Hello! I'm your AI study coach. I can help you with any subject. Press the mic button and ask me anything! 🎓</div>
+                <div class="text">Hello! I'm your AI study coach. I can help you with any subject. Hold the mic button and ask me anything! 🎓</div>
             </div>
         </div>
 
@@ -42,11 +42,16 @@
             <span class="speaking-text">Coach is speaking...</span>
         </div>
 
-        <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">🎤</button>
-        <div class="status" id="status">Press the button and speak</div>
+        <button class="mic-btn" id="mic-btn"
+            onmousedown="startRecording()"
+            onmouseup="stopRecording()"
+            ontouchstart="startRecording()"
+            ontouchend="stopRecording()">🎤</button>
+
+        <div class="status" id="status">Hold the button and speak</div>
         <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
     </div>
 
-    <script src="/static/script.js?v=3"></script>
+    <script src="/static/script.js?v=4"></script>
 </body>
 </html>
