@@ -55,9 +55,10 @@ def index():
 def chat():
     global conversation_history
 
-    # Get audio from browser
+    # Get audio and subject from browser
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
+    selected_subject = request.form.get("subject", "Any Subject")
 
     # Check if audio is too short
     if len(audio_bytes) < 1000:
@@ -79,22 +80,27 @@ def chat():
         print(f"Transcription error: {e}")
         return jsonify({"error": "Could not transcribe audio"}), 500
 
+    print(f"Subject: {selected_subject}")
     print(f"Student said: {student_text}")
 
     # Skip empty transcriptions
     if not student_text:
         return jsonify({"error": "No speech detected"}), 400
 
-    # Add to history and get reply
+    # Add to history
     conversation_history.append({
         "role": "user",
         "content": student_text
     })
 
+    # Build subject focused prompt
+    subject_prompt = SYSTEM_PROMPT + f"\n\nCurrent session focus: {selected_subject}. Keep all explanations focused on this subject unless student asks otherwise."
+
+    # Get Groq reply
     response = groq_client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT}
+            {"role": "system", "content": subject_prompt}
         ] + conversation_history
     )
 

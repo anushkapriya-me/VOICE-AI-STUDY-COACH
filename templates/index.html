@@ -11,10 +11,26 @@
         <h1>🎓 Voice AI Study Coach</h1>
         <p class="subtitle">Ask me anything — math, science, history, programming and more</p>
 
+        <!-- Subject Selector -->
+        <div id="subject-selector">
+            <p class="subject-title">What would you like to study today?</p>
+            <div class="subject-grid">
+                <button class="subject-btn" onclick="selectSubject('Math', this)">🔢 Math</button>
+                <button class="subject-btn" onclick="selectSubject('Science', this)">🔬 Science</button>
+                <button class="subject-btn" onclick="selectSubject('History', this)">📖 History</button>
+                <button class="subject-btn" onclick="selectSubject('Programming', this)">💻 Programming</button>
+                <button class="subject-btn" onclick="selectSubject('Geography', this)">🌍 Geography</button>
+                <button class="subject-btn" onclick="selectSubject('English', this)">📝 English</button>
+                <button class="subject-btn" onclick="selectSubject('Chemistry', this)">⚗️ Chemistry</button>
+                <button class="subject-btn" onclick="selectSubject('Biology', this)">🧬 Biology</button>
+                <button class="subject-btn active" onclick="selectSubject('Any Subject', this)">🎯 Any Subject</button>
+            </div>
+        </div>
+
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
-                <div class="text">Hello! I'm your AI study coach. I can help you with any subject. Hold the mic button and ask me anything! 🎓</div>
+                <div class="text">Hello! I'm your AI study coach. Pick a subject above and hold the mic button to ask me anything! 🎓</div>
             </div>
         </div>
 
@@ -52,6 +68,6 @@
         <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
     </div>
 
-    <script src="/static/script.js?v=4"></script>
+    <script src="/static/script.js?v=5"></script>
 </body>
 </html>

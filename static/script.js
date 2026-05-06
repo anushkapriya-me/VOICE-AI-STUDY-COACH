@@ -3,6 +3,13 @@ let audioChunks = [];
 let isRecording = false;
 let isProcessing = false;
 let shouldSend = false;
+let selectedSubject = "Any Subject";
+
+function selectSubject(subject, btn) {
+    selectedSubject = subject;
+    document.querySelectorAll(".subject-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
 
 async function startRecording() {
     if (isRecording || isProcessing) return;
@@ -95,6 +102,7 @@ async function sendAudio() {
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "recording.webm");
+        formData.append("subject", selectedSubject);
 
         const response = await fetch("/chat", {
             method: "POST",
@@ -119,12 +127,11 @@ async function sendAudio() {
         const status = document.getElementById("status");
         if (status) status.style.display = "none";
 
-        // Play audio then wait 1.5s before re-enabling mic
         await playAudio(data.audio_url);
 
         if (speaking) speaking.style.display = "none";
 
-        // Wait 1.5 seconds after coach finishes
+        // Wait 1.5 seconds after coach finishes before enabling mic
         await new Promise(resolve => setTimeout(resolve, 1500));
 
     } catch (err) {
@@ -196,7 +203,7 @@ async function resetSession() {
     chatBox.innerHTML = `
         <div class="message coach">
             <div class="label">Coach</div>
-            <div class="text">Session reset! What would you like to study today? 🎓</div>
+            <div class="text">Session reset! Pick a subject and let's start studying! 🎓</div>
         </div>
     `;
     resetUI();
