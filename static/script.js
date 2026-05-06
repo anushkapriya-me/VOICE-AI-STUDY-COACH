@@ -34,9 +34,9 @@ async function startRecording() {
         };
 
         mediaRecorder.start(100);
-
         isRecording = true;
         shouldSend = false;
+
         document.getElementById("mic-btn").classList.add("recording");
         document.getElementById("mic-btn").innerText = "⏹";
         document.getElementById("status").innerText = "Recording... release to send!";
@@ -197,14 +197,40 @@ function addMessage(role, text) {
 }
 
 async function resetSession() {
+    document.getElementById("status").innerText = "Generating summary...";
+
+    try {
+        const response = await fetch("/summary");
+        const data = await response.json();
+
+        document.getElementById("sum-duration").innerText = data.duration;
+        document.getElementById("sum-questions").innerText = data.questions;
+        document.getElementById("sum-subject").innerText = data.subject;
+        document.getElementById("sum-topics").innerText = data.topics || "Not enough data";
+        document.getElementById("sum-weak").innerText = data.weak_areas || "None identified";
+        document.getElementById("sum-tip").innerText = data.tip || "Keep practicing!";
+
+        document.getElementById("summary-modal").style.display = "flex";
+
+    } catch (err) {
+        console.error("Summary error:", err);
+        confirmReset();
+    }
+}
+
+async function confirmReset() {
+    document.getElementById("summary-modal").style.display = "none";
+
     isProcessing = false;
     await fetch("/reset", { method: "POST" });
+
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML = `
         <div class="message coach">
             <div class="label">Coach</div>
-            <div class="text">Session reset! Pick a subject and let's start studying! 🎓</div>
+            <div class="text">New session started! Pick a subject and let's go! 🎓</div>
         </div>
     `;
     resetUI();
+    document.getElementById("status").innerText = "Hold the button and speak";
 }

@@ -27,6 +27,40 @@
             </div>
         </div>
 
+        <!-- Session Summary Modal -->
+        <div id="summary-modal" style="display:none">
+            <div class="summary-box">
+                <h2>📊 Session Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">⏱️ Duration</div>
+                        <div class="summary-value" id="sum-duration">—</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">❓ Questions</div>
+                        <div class="summary-value" id="sum-questions">—</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">📚 Subject</div>
+                        <div class="summary-value" id="sum-subject">—</div>
+                    </div>
+                </div>
+                <div class="summary-section">
+                    <div class="summary-label">✅ Topics Covered</div>
+                    <div class="summary-text" id="sum-topics">—</div>
+                </div>
+                <div class="summary-section">
+                    <div class="summary-label">⚠️ Needs Review</div>
+                    <div class="summary-text" id="sum-weak">—</div>
+                </div>
+                <div class="summary-section">
+                    <div class="summary-label">💡 Tonight's Tip</div>
+                    <div class="summary-text" id="sum-tip">—</div>
+                </div>
+                <button class="start-new-btn" onclick="confirmReset()">🔄 Start New Session</button>
+            </div>
+        </div>
+
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
@@ -65,9 +99,9 @@
             ontouchend="stopRecording()">🎤</button>
 
         <div class="status" id="status">Hold the button and speak</div>
-        <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
+        <button class="reset-btn" onclick="resetSession()">📊 End Session & Summary</button>
     </div>
 
-    <script src="/static/script.js?v=5"></script>
+    <script src="/static/script.js?v=6"></script>
 </body>
 </html>

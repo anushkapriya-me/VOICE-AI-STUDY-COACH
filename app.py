@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 import os
 import struct
+import time
 from groq import Groq
 from cartesia import Cartesia
 
@@ -26,6 +27,9 @@ Your rules:
 - If the student asks something non-academic, politely bring them back to studying"""
 
 conversation_history = []
+session_start_time = time.time()
+session_subject = "Any Subject"
+question_count = 0
 
 def save_wav(raw_audio, filename):
     sample_rate = 22050
@@ -53,12 +57,13 @@ def index():
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    global conversation_history
+    global conversation_history, session_subject, question_count
 
     # Get audio and subject from browser
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
+    session_subject = selected_subject
 
     # Check if audio is too short
     if len(audio_bytes) < 1000:
@@ -83,9 +88,10 @@ def chat():
     print(f"Subject: {selected_subject}")
     print(f"Student said: {student_text}")
 
-    # Skip empty transcriptions
     if not student_text:
         return jsonify({"error": "No speech detected"}), 400
+
+    question_count += 1
 
     # Add to history
     conversation_history.append({
@@ -131,10 +137,66 @@ def chat():
         "audio_url": "/static/reply.wav"
     })
 
+@app.route("/summary", methods=["GET"])
+def summary():
+    global conversation_history, session_start_time, session_subject, question_count
+
+    if len(conversation_history) == 0:
+        return jsonify({
+            "duration": "0 minutes",
+            "questions": 0,
+            "subject": session_subject,
+            "summary": "No questions asked yet!",
+            "tip": "Start by asking a question!"
+        })
+
+    # Calculate duration
+    duration_seconds = int(time.time() - session_start_time)
+    duration_minutes = duration_seconds // 60
+    duration_secs = duration_seconds % 60
+    duration_str = f"{duration_minutes}m {duration_secs}s"
+
+    # Ask Groq to summarize the session
+    summary_prompt = """Based on this study session conversation, provide a brief summary in this exact JSON format:
+{
+  "topics": "comma separated list of topics covered",
+  "weak_areas": "topics the student seemed confused about or ask to repeat",
+  "tip": "one specific study tip for tonight based on what was covered"
+}
+Only respond with the JSON, nothing else."""
+
+    try:
+        summary_response = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": summary_prompt}
+            ] + conversation_history
+        )
+        import json
+        summary_text = summary_response.choices[0].message.content.strip()
+        summary_data = json.loads(summary_text)
+    except:
+        summary_data = {
+            "topics": session_subject,
+            "weak_areas": "None identified",
+            "tip": "Review today's topics and practice with examples!"
+        }
+
+    return jsonify({
+        "duration": duration_str,
+        "questions": question_count,
+        "subject": session_subject,
+        "topics": summary_data.get("topics", ""),
+        "weak_areas": summary_data.get("weak_areas", ""),
+        "tip": summary_data.get("tip", "")
+    })
+
 @app.route("/reset", methods=["POST"])
 def reset():
-    global conversation_history
+    global conversation_history, session_start_time, question_count
     conversation_history = []
+    session_start_time = time.time()
+    question_count = 0
     return jsonify({"status": "reset"})
 
 if __name__ == "__main__":
