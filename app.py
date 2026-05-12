@@ -105,6 +105,7 @@ def chat():
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
+    selected_voice = request.form.get("voice", "694f9389-aac1-45b6-b726-9d9369183238")
     session_subject = selected_subject
 
     if len(audio_bytes) < 1000:
@@ -157,7 +158,7 @@ def chat():
     tts_response = cartesia_client.tts.generate(
         model_id="sonic-2",
         transcript=coach_reply,
-        voice={"mode": "id", "id": "694f9389-aac1-45b6-b726-9d9369183238"},
+        voice={"mode": "id", "id": selected_voice},
         output_format={
             "container": "raw",
             "encoding": "pcm_s16le",

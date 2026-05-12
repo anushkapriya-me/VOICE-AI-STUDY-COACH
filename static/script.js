@@ -4,13 +4,18 @@ let isRecording = false;
 let isProcessing = false;
 let shouldSend = false;
 let selectedSubject = "Any Subject";
+let selectedVoice = "694f9389-aac1-45b6-b726-9d9369183238";
 
 function selectSubject(subject, btn) {
     selectedSubject = subject;
     document.querySelectorAll(".subject-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 }
-
+function selectVoice(voiceId, btn) {
+    selectedVoice = voiceId;
+    document.querySelectorAll(".voice-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+}
 async function startRecording() {
     if (isRecording || isProcessing) return;
 
@@ -103,7 +108,8 @@ async function sendAudio() {
         const formData = new FormData();
         formData.append("audio", audioBlob, "recording.webm");
         formData.append("subject", selectedSubject);
-
+        formData.append("voice", selectedVoice);
+        
         const response = await fetch("/chat", {
             method: "POST",
             body: formData

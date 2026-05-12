@@ -456,3 +456,37 @@ h1 {
 .chat-box::-webkit-scrollbar { width: 4px; }
 .chat-box::-webkit-scrollbar-track { background: #1a1a2e; }
 .chat-box::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 2px; }
+
+/* Voice Selector */
+#voice-selector { margin-bottom: 16px; }
+
+.voice-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.voice-btn {
+    background: #1a1a2e;
+    border: 0.5px solid #2a2a4a;
+    color: #888;
+    padding: 10px 6px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.voice-btn:hover {
+    border-color: #48bb78;
+    color: #48bb78;
+}
+
+.voice-btn.active {
+    border-color: #48bb78;
+    background: linear-gradient(135deg, rgba(72,187,120,0.15), rgba(26,158,92,0.15));
+    color: #48bb78;
+    font-weight: 500;
+}

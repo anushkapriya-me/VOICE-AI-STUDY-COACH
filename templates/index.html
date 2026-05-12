@@ -10,7 +10,16 @@
     <div class="container">
         <h1>🎓 Voice AI Study Coach</h1>
         <p class="subtitle">Ask me anything — math, science, history, programming and more</p>
-
+        <!-- Voice Selector -->
+<div id="voice-selector">
+    <p class="subject-title">🎙️ Choose your coach voice:</p>
+    <div class="voice-grid">
+        <button class="voice-btn active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', this)">👨 Marcus</button>
+        <button class="voice-btn" onclick="selectVoice('228fca29-3a0a-435c-8728-5cb483251068', this)">🎓 Kiefer</button>
+        <button class="voice-btn" onclick="selectVoice('f786b574-daa5-4673-aa0c-cbe3e8534c02', this)">👩 Katie</button>
+        <button class="voice-btn" onclick="selectVoice('6ccbfb76-1fc6-48f7-b71d-91ac6298247b', this)">✨ Tessa</button>
+    </div>
+</div>
         <!-- Subject Selector -->
         <div id="subject-selector">
             <p class="subject-title">What would you like to study today?</p>
