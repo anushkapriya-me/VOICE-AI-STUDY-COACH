@@ -61,6 +61,19 @@
             </div>
         </div>
 
+        <!-- Past Sessions Modal -->
+        <div id="history-panel" style="display:none">
+            <div class="history-box">
+                <div class="history-header">
+                    <span>📅 Past Sessions</span>
+                    <button onclick="toggleHistory()" class="close-btn">✕</button>
+                </div>
+                <div id="history-list">
+                    <p class="no-history">Loading...</p>
+                </div>
+            </div>
+        </div>
+
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
@@ -99,9 +112,13 @@
             ontouchend="stopRecording()">🎤</button>
 
         <div class="status" id="status">Hold the button and speak</div>
-        <button class="reset-btn" onclick="resetSession()">📊 End Session & Summary</button>
+
+        <div class="bottom-btns">
+            <button class="reset-btn" onclick="resetSession()">📊 End Session & Summary</button>
+            <button class="history-btn" onclick="toggleHistory()">📅 Past Sessions</button>
+        </div>
     </div>
 
-    <script src="/static/script.js?v=6"></script>
+    <script src="/static/script.js?v=7"></script>
 </body>
 </html>

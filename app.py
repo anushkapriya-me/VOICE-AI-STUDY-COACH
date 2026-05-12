@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import struct
 import time
+import json
 from groq import Groq
 from cartesia import Cartesia
 
@@ -25,6 +26,8 @@ Your rules:
 - Remember what topics have been discussed and reinforce weak areas
 - Automatically detect what subject the student is asking about and switch accordingly
 - If the student asks something non-academic, politely bring them back to studying"""
+
+HISTORY_FILE = "session_history.json"
 
 conversation_history = []
 session_start_time = time.time()
@@ -51,29 +54,65 @@ def save_wav(raw_audio, filename):
         f.write(struct.pack('<I', len(raw_audio)))
         f.write(raw_audio)
 
+def load_past_sessions():
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return []
+    return []
+
+def save_session_to_history(summary_data):
+    sessions = load_past_sessions()
+    sessions.append({
+        "date": time.strftime("%Y-%m-%d %H:%M"),
+        "subject": summary_data.get("subject", ""),
+        "duration": summary_data.get("duration", ""),
+        "questions": summary_data.get("questions", 0),
+        "topics": summary_data.get("topics", ""),
+        "weak_areas": summary_data.get("weak_areas", ""),
+        "tip": summary_data.get("tip", "")
+    })
+    sessions = sessions[-10:]
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(sessions, f, indent=2)
+
+def build_context_from_history():
+    sessions = load_past_sessions()
+    if not sessions:
+        return ""
+    context = "\n\nPAST SESSION HISTORY (use this to personalize coaching):\n"
+    for s in sessions[-3:]:
+        context += f"- Date: {s['date']}, Subject: {s['subject']}, "
+        context += f"Topics: {s['topics']}, Weak areas: {s['weak_areas']}\n"
+    context += "Reinforce any weak areas from past sessions naturally in your coaching."
+    return context
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/past-sessions", methods=["GET"])
+def past_sessions():
+    sessions = load_past_sessions()
+    return jsonify(sessions)
 
 @app.route("/chat", methods=["POST"])
 def chat():
     global conversation_history, session_subject, question_count
 
-    # Get audio and subject from browser
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
     session_subject = selected_subject
 
-    # Check if audio is too short
     if len(audio_bytes) < 1000:
         return jsonify({"error": "Audio too short"}), 400
 
-    # Save temporarily as webm
     with open("temp_input.webm", "wb") as f:
         f.write(audio_bytes)
 
-    # Transcribe with Groq Whisper
     try:
         with open("temp_input.webm", "rb") as audio:
             transcription = groq_client.audio.transcriptions.create(
@@ -93,16 +132,14 @@ def chat():
 
     question_count += 1
 
-    # Add to history
     conversation_history.append({
         "role": "user",
         "content": student_text
     })
 
-    # Build subject focused prompt
-    subject_prompt = SYSTEM_PROMPT + f"\n\nCurrent session focus: {selected_subject}. Keep all explanations focused on this subject unless student asks otherwise."
+    history_context = build_context_from_history()
+    subject_prompt = SYSTEM_PROMPT + history_context + f"\n\nCurrent session focus: {selected_subject}."
 
-    # Get Groq reply
     response = groq_client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
@@ -117,7 +154,6 @@ def chat():
     })
     print(f"Coach: {coach_reply}")
 
-    # Convert to speech
     tts_response = cartesia_client.tts.generate(
         model_id="sonic-2",
         transcript=coach_reply,
@@ -146,21 +182,20 @@ def summary():
             "duration": "0 minutes",
             "questions": 0,
             "subject": session_subject,
-            "summary": "No questions asked yet!",
+            "topics": "No questions asked yet!",
+            "weak_areas": "None",
             "tip": "Start by asking a question!"
         })
 
-    # Calculate duration
     duration_seconds = int(time.time() - session_start_time)
     duration_minutes = duration_seconds // 60
     duration_secs = duration_seconds % 60
     duration_str = f"{duration_minutes}m {duration_secs}s"
 
-    # Ask Groq to summarize the session
     summary_prompt = """Based on this study session conversation, provide a brief summary in this exact JSON format:
 {
   "topics": "comma separated list of topics covered",
-  "weak_areas": "topics the student seemed confused about or ask to repeat",
+  "weak_areas": "topics the student seemed confused about or asked to repeat",
   "tip": "one specific study tip for tonight based on what was covered"
 }
 Only respond with the JSON, nothing else."""
@@ -172,7 +207,6 @@ Only respond with the JSON, nothing else."""
                 {"role": "system", "content": summary_prompt}
             ] + conversation_history
         )
-        import json
         summary_text = summary_response.choices[0].message.content.strip()
         summary_data = json.loads(summary_text)
     except:
@@ -182,14 +216,17 @@ Only respond with the JSON, nothing else."""
             "tip": "Review today's topics and practice with examples!"
         }
 
-    return jsonify({
+    result = {
         "duration": duration_str,
         "questions": question_count,
         "subject": session_subject,
         "topics": summary_data.get("topics", ""),
         "weak_areas": summary_data.get("weak_areas", ""),
         "tip": summary_data.get("tip", "")
-    })
+    }
+
+    save_session_to_history(result)
+    return jsonify(result)
 
 @app.route("/reset", methods=["POST"])
 def reset():

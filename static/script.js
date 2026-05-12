@@ -109,9 +109,7 @@ async function sendAudio() {
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error("Server error: " + response.status);
-        }
+        if (!response.ok) throw new Error("Server error: " + response.status);
 
         const data = await response.json();
 
@@ -131,7 +129,6 @@ async function sendAudio() {
 
         if (speaking) speaking.style.display = "none";
 
-        // Wait 1.5 seconds after coach finishes before enabling mic
         await new Promise(resolve => setTimeout(resolve, 1500));
 
     } catch (err) {
@@ -220,8 +217,8 @@ async function resetSession() {
 
 async function confirmReset() {
     document.getElementById("summary-modal").style.display = "none";
-
     isProcessing = false;
+
     await fetch("/reset", { method: "POST" });
 
     const chatBox = document.getElementById("chat-box");
@@ -233,4 +230,39 @@ async function confirmReset() {
     `;
     resetUI();
     document.getElementById("status").innerText = "Hold the button and speak";
+}
+
+async function toggleHistory() {
+    const panel = document.getElementById("history-panel");
+    if (panel.style.display === "flex") {
+        panel.style.display = "none";
+        return;
+    }
+
+    const list = document.getElementById("history-list");
+    list.innerHTML = '<p class="no-history">Loading...</p>';
+    panel.style.display = "flex";
+
+    try {
+        const response = await fetch("/past-sessions");
+        const sessions = await response.json();
+
+        if (sessions.length === 0) {
+            list.innerHTML = '<p class="no-history">No past sessions yet! Complete a session to see history.</p>';
+            return;
+        }
+
+        list.innerHTML = sessions.reverse().map(s => `
+            <div class="history-card">
+                <div class="history-date">${s.date}</div>
+                <div class="history-subject">📚 ${s.subject} — ${s.duration} · ${s.questions} questions</div>
+                <div class="history-detail">✅ ${s.topics}</div>
+                ${s.weak_areas && s.weak_areas !== "None identified" ?
+                    `<div class="history-detail">⚠️ Review: ${s.weak_areas}</div>` : ""}
+            </div>
+        `).join("");
+
+    } catch (err) {
+        list.innerHTML = '<p class="no-history">Could not load history.</p>';
+    }
 }
