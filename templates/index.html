@@ -8,21 +8,46 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎓 Voice AI Study Coach</h1>
-        <p class="subtitle">Ask me anything — math, science, history, programming and more</p>
+
+        <!-- Top badge -->
+        <div class="top-badge">
+            <div class="top-badge-dot"></div>
+            AI · STUDY · COACH
+        </div>
+
+        <!-- Title -->
+        <h1>
+            <span class="white">Voice AI</span><br>
+            <span class="cyan">Study Coach</span>
+        </h1>
+
+        <p class="subtitle">
+            Speak naturally. Learn anything.<br>
+            Math, Science, History, Programming and more.
+        </p>
+
+        <!-- Pill badges -->
+        <div class="badges">
+            <span class="badge">⚡ Groq Powered</span>
+            <span class="badge">🎙️ Real-time Voice</span>
+            <span class="badge">🧠 Spaced Repetition</span>
+            <span class="badge">📊 Session Tracking</span>
+        </div>
+
         <!-- Voice Selector -->
-<div id="voice-selector">
-    <p class="subject-title">🎙️ Choose your coach voice:</p>
-    <div class="voice-grid">
-        <button class="voice-btn active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', this)">👨 Marcus</button>
-        <button class="voice-btn" onclick="selectVoice('228fca29-3a0a-435c-8728-5cb483251068', this)">🎓 Kiefer</button>
-        <button class="voice-btn" onclick="selectVoice('f786b574-daa5-4673-aa0c-cbe3e8534c02', this)">👩 Katie</button>
-        <button class="voice-btn" onclick="selectVoice('6ccbfb76-1fc6-48f7-b71d-91ac6298247b', this)">✨ Tessa</button>
-    </div>
-</div>
+        <div id="voice-selector">
+            <p class="section-label">🎙️ Coach Voice</p>
+            <div class="voice-grid">
+                <button class="voice-btn active" onclick="selectVoice('694f9389-aac1-45b6-b726-9d9369183238', this)">👨 Marcus</button>
+                <button class="voice-btn" onclick="selectVoice('228fca29-3a0a-435c-8728-5cb483251068', this)">🎓 Kiefer</button>
+                <button class="voice-btn" onclick="selectVoice('f786b574-daa5-4673-aa0c-cbe3e8534c02', this)">👩 Katie</button>
+                <button class="voice-btn" onclick="selectVoice('6ccbfb76-1fc6-48f7-b71d-91ac6298247b', this)">✨ Tessa</button>
+            </div>
+        </div>
+
         <!-- Subject Selector -->
         <div id="subject-selector">
-            <p class="subject-title">What would you like to study today?</p>
+            <p class="section-label">📚 Subject</p>
             <div class="subject-grid">
                 <button class="subject-btn" onclick="selectSubject('Math', this)">🔢 Math</button>
                 <button class="subject-btn" onclick="selectSubject('Science', this)">🔬 Science</button>
@@ -32,25 +57,25 @@
                 <button class="subject-btn" onclick="selectSubject('English', this)">📝 English</button>
                 <button class="subject-btn" onclick="selectSubject('Chemistry', this)">⚗️ Chemistry</button>
                 <button class="subject-btn" onclick="selectSubject('Biology', this)">🧬 Biology</button>
-                <button class="subject-btn active" onclick="selectSubject('Any Subject', this)">🎯 Any Subject</button>
+                <button class="subject-btn active" onclick="selectSubject('Any Subject', this)">🎯 Any</button>
             </div>
         </div>
 
         <!-- Session Summary Modal -->
         <div id="summary-modal" style="display:none">
             <div class="summary-box">
-                <h2>📊 Session Summary</h2>
+                <h2>📊 SESSION SUMMARY</h2>
                 <div class="summary-grid">
                     <div class="summary-item">
-                        <div class="summary-label">⏱️ Duration</div>
+                        <div class="summary-label">Duration</div>
                         <div class="summary-value" id="sum-duration">—</div>
                     </div>
                     <div class="summary-item">
-                        <div class="summary-label">❓ Questions</div>
+                        <div class="summary-label">Questions</div>
                         <div class="summary-value" id="sum-questions">—</div>
                     </div>
                     <div class="summary-item">
-                        <div class="summary-label">📚 Subject</div>
+                        <div class="summary-label">Subject</div>
                         <div class="summary-value" id="sum-subject">—</div>
                     </div>
                 </div>
@@ -66,7 +91,7 @@
                     <div class="summary-label">💡 Tonight's Tip</div>
                     <div class="summary-text" id="sum-tip">—</div>
                 </div>
-                <button class="start-new-btn" onclick="confirmReset()">🔄 Start New Session</button>
+                <button class="start-new-btn" onclick="confirmReset()">→ START NEW SESSION</button>
             </div>
         </div>
 
@@ -74,7 +99,7 @@
         <div id="history-panel" style="display:none">
             <div class="history-box">
                 <div class="history-header">
-                    <span>📅 Past Sessions</span>
+                    <span>PAST SESSIONS</span>
                     <button onclick="toggleHistory()" class="close-btn">✕</button>
                 </div>
                 <div id="history-list">
@@ -83,6 +108,7 @@
             </div>
         </div>
 
+        <!-- Chat box -->
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
@@ -90,6 +116,7 @@
             </div>
         </div>
 
+        <!-- Animations -->
         <div id="waveform" style="display:none">
             <div class="wave-bar"></div>
             <div class="wave-bar"></div>
@@ -102,7 +129,7 @@
 
         <div id="thinking" style="display:none">
             <div class="thinking-spinner"></div>
-            <span class="thinking-text">Coach is thinking...</span>
+            <span class="thinking-text">thinking...</span>
         </div>
 
         <div id="speaking" style="display:none">
@@ -111,23 +138,25 @@
             <div class="speak-bar"></div>
             <div class="speak-bar"></div>
             <div class="speak-bar"></div>
-            <span class="speaking-text">Coach is speaking...</span>
+            <span class="speaking-text">speaking...</span>
         </div>
 
+        <!-- Mic button -->
         <button class="mic-btn" id="mic-btn"
             onmousedown="startRecording()"
             onmouseup="stopRecording()"
             ontouchstart="startRecording()"
             ontouchend="stopRecording()">🎤</button>
 
-        <div class="status" id="status">Hold the button and speak</div>
+        <div class="status" id="status">hold to speak · release to send</div>
 
         <div class="bottom-btns">
-            <button class="reset-btn" onclick="resetSession()">📊 End Session & Summary</button>
-            <button class="history-btn" onclick="toggleHistory()">📅 Past Sessions</button>
+            <button class="reset-btn" onclick="resetSession()">📊 End Session</button>
+            <button class="history-btn" onclick="toggleHistory()">📅 History</button>
         </div>
+
     </div>
 
-    <script src="/static/script.js?v=7"></script>
+    <script src="/static/script.js?v=8"></script>
 </body>
 </html>
