@@ -119,6 +119,7 @@ def chat():
             transcription = groq_client.audio.transcriptions.create(
                 model="whisper-large-v3-turbo",
                 file=audio,
+                language="en",
             )
         student_text = transcription.text.strip()
     except Exception as e:
