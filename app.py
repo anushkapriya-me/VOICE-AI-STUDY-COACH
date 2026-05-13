@@ -4,6 +4,7 @@ import os
 import struct
 import time
 import json
+import base64
 from groq import Groq
 from cartesia import Cartesia
 
@@ -34,26 +35,6 @@ session_start_time = time.time()
 session_subject = "Any Subject"
 question_count = 0
 
-def save_wav(raw_audio, filename):
-    sample_rate = 22050
-    num_channels = 1
-    bits_per_sample = 16
-    with open(filename, "wb") as f:
-        f.write(b'RIFF')
-        f.write(struct.pack('<I', 36 + len(raw_audio)))
-        f.write(b'WAVE')
-        f.write(b'fmt ')
-        f.write(struct.pack('<I', 16))
-        f.write(struct.pack('<H', 1))
-        f.write(struct.pack('<H', num_channels))
-        f.write(struct.pack('<I', sample_rate))
-        f.write(struct.pack('<I', sample_rate * num_channels * bits_per_sample // 8))
-        f.write(struct.pack('<H', num_channels * bits_per_sample // 8))
-        f.write(struct.pack('<H', bits_per_sample))
-        f.write(b'data')
-        f.write(struct.pack('<I', len(raw_audio)))
-        f.write(raw_audio)
-
 def load_past_sessions():
     if os.path.exists(HISTORY_FILE):
         try:
@@ -75,8 +56,11 @@ def save_session_to_history(summary_data):
         "tip": summary_data.get("tip", "")
     })
     sessions = sessions[-10:]
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(sessions, f, indent=2)
+    try:
+        with open(HISTORY_FILE, "w") as f:
+            json.dump(sessions, f, indent=2)
+    except:
+        pass
 
 def build_context_from_history():
     sessions = load_past_sessions()
@@ -88,6 +72,29 @@ def build_context_from_history():
         context += f"Topics: {s['topics']}, Weak areas: {s['weak_areas']}\n"
     context += "Reinforce any weak areas from past sessions naturally in your coaching."
     return context
+
+def make_wav_bytes(raw_audio):
+    """Convert raw PCM to WAV bytes in memory"""
+    sample_rate = 22050
+    num_channels = 1
+    bits_per_sample = 16
+    import io
+    buf = io.BytesIO()
+    buf.write(b'RIFF')
+    buf.write(struct.pack('<I', 36 + len(raw_audio)))
+    buf.write(b'WAVE')
+    buf.write(b'fmt ')
+    buf.write(struct.pack('<I', 16))
+    buf.write(struct.pack('<H', 1))
+    buf.write(struct.pack('<H', num_channels))
+    buf.write(struct.pack('<I', sample_rate))
+    buf.write(struct.pack('<I', sample_rate * num_channels * bits_per_sample // 8))
+    buf.write(struct.pack('<H', num_channels * bits_per_sample // 8))
+    buf.write(struct.pack('<H', bits_per_sample))
+    buf.write(b'data')
+    buf.write(struct.pack('<I', len(raw_audio)))
+    buf.write(raw_audio)
+    return buf.getvalue()
 
 @app.route("/")
 def index():
@@ -111,11 +118,21 @@ def chat():
     if len(audio_bytes) < 1000:
         return jsonify({"error": "Audio too short"}), 400
 
-    with open("temp_input.webm", "wb") as f:
-        f.write(audio_bytes)
-
+    # Save temporarily
     try:
-        with open("temp_input.webm", "rb") as audio:
+        with open("temp_input.webm", "wb") as f:
+            f.write(audio_bytes)
+        audio_path = "temp_input.webm"
+    except:
+        import tempfile
+        tmp = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
+        tmp.write(audio_bytes)
+        tmp.close()
+        audio_path = tmp.name
+
+    # Transcribe
+    try:
+        with open(audio_path, "rb") as audio:
             transcription = groq_client.audio.transcriptions.create(
                 model="whisper-large-v3-turbo",
                 file=audio,
@@ -126,36 +143,27 @@ def chat():
         print(f"Transcription error: {e}")
         return jsonify({"error": "Could not transcribe audio"}), 500
 
-    print(f"Subject: {selected_subject}")
-    print(f"Student said: {student_text}")
+    print(f"Subject: {selected_subject} | Student: {student_text}")
 
     if not student_text:
         return jsonify({"error": "No speech detected"}), 400
 
     question_count += 1
-
-    conversation_history.append({
-        "role": "user",
-        "content": student_text
-    })
+    conversation_history.append({"role": "user", "content": student_text})
 
     history_context = build_context_from_history()
     subject_prompt = SYSTEM_PROMPT + history_context + f"\n\nCurrent session focus: {selected_subject}."
 
     response = groq_client.chat.completions.create(
         model="llama-3.1-8b-instant",
-        messages=[
-            {"role": "system", "content": subject_prompt}
-        ] + conversation_history
+        messages=[{"role": "system", "content": subject_prompt}] + conversation_history
     )
 
     coach_reply = response.choices[0].message.content
-    conversation_history.append({
-        "role": "assistant",
-        "content": coach_reply
-    })
+    conversation_history.append({"role": "assistant", "content": coach_reply})
     print(f"Coach: {coach_reply}")
 
+    # Generate TTS
     tts_response = cartesia_client.tts.generate(
         model_id="sonic-2",
         transcript=coach_reply,
@@ -167,12 +175,15 @@ def chat():
         },
     )
     raw_audio = tts_response.read()
-    save_wav(raw_audio, "static/reply.wav")
+
+    # Convert to base64 WAV — no file writing needed!
+    wav_bytes = make_wav_bytes(raw_audio)
+    audio_b64 = base64.b64encode(wav_bytes).decode("utf-8")
 
     return jsonify({
         "student_text": student_text,
         "coach_reply": coach_reply,
-        "audio_url": "/static/reply.wav"
+        "audio_b64": audio_b64
     })
 
 @app.route("/summary", methods=["GET"])
@@ -190,27 +201,22 @@ def summary():
         })
 
     duration_seconds = int(time.time() - session_start_time)
-    duration_minutes = duration_seconds // 60
-    duration_secs = duration_seconds % 60
-    duration_str = f"{duration_minutes}m {duration_secs}s"
+    duration_str = f"{duration_seconds // 60}m {duration_seconds % 60}s"
 
     summary_prompt = """Based on this study session conversation, provide a brief summary in this exact JSON format:
 {
   "topics": "comma separated list of topics covered",
-  "weak_areas": "topics the student seemed confused about or asked to repeat",
-  "tip": "one specific study tip for tonight based on what was covered"
+  "weak_areas": "topics the student seemed confused about",
+  "tip": "one specific study tip for tonight"
 }
 Only respond with the JSON, nothing else."""
 
     try:
         summary_response = groq_client.chat.completions.create(
             model="llama-3.1-8b-instant",
-            messages=[
-                {"role": "system", "content": summary_prompt}
-            ] + conversation_history
+            messages=[{"role": "system", "content": summary_prompt}] + conversation_history
         )
-        summary_text = summary_response.choices[0].message.content.strip()
-        summary_data = json.loads(summary_text)
+        summary_data = json.loads(summary_response.choices[0].message.content.strip())
     except:
         summary_data = {
             "topics": session_subject,

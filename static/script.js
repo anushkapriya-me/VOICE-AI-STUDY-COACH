@@ -187,7 +187,7 @@ async function sendAudio() {
         const status = document.getElementById("status");
         if (status) status.style.display = "none";
 
-        await playAudio(data.audio_url);
+        await playAudio(data.audio_b64);
 
         if (speaking) speaking.style.display = "none";
 
@@ -205,15 +205,24 @@ async function sendAudio() {
     }
 }
 
-function playAudio(audioUrl) {
+function playAudio(audioB64) {
     return new Promise((resolve) => {
-        const audio = new Audio(audioUrl + "?t=" + Date.now());
-        audio.onended = resolve;
-        audio.onerror = resolve;
-        audio.play().catch(err => {
-            console.error("Audio play error:", err);
+        try {
+            const binary = atob(audioB64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: "audio/wav" });
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+            audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+            audio.play().catch(() => resolve());
+        } catch (err) {
+            console.error("Audio error:", err);
             resolve();
-        });
+        }
     });
 }
 
