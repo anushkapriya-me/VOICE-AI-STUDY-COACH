@@ -118,26 +118,17 @@ def chat():
     if len(audio_bytes) < 1000:
         return jsonify({"error": "Audio too short"}), 400
 
-    # Save temporarily
+  
+# Transcribe directly from memory - no file writing needed!
     try:
-        with open("temp_input.webm", "wb") as f:
-            f.write(audio_bytes)
-        audio_path = "temp_input.webm"
-    except:
-        import tempfile
-        tmp = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
-        tmp.write(audio_bytes)
-        tmp.close()
-        audio_path = tmp.name
-
-    # Transcribe
-    try:
-        with open(audio_path, "rb") as audio:
-            transcription = groq_client.audio.transcriptions.create(
-                model="whisper-large-v3-turbo",
-                file=audio,
-                language="en",
-            )
+        import io
+        audio_buffer = io.BytesIO(audio_bytes)
+        audio_buffer.name = "audio.webm"
+        transcription = groq_client.audio.transcriptions.create(
+            model="whisper-large-v3-turbo",
+            file=audio_buffer,
+            language="en",
+        )
         student_text = transcription.text.strip()
     except Exception as e:
         print(f"Transcription error: {e}")
