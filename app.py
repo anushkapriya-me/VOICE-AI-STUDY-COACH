@@ -7,7 +7,7 @@ import base64
 import io
 import struct
 from groq import Groq
-from gtts import gTTS
+from cartesia import Cartesia
 
 load_dotenv()
 
@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 print("Setting up AI clients...")
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+cartesia_client = Cartesia(api_key=os.getenv("CARTESIA_API_KEY"))
 print("Ready!")
 
 SYSTEM_PROMPT = """You are an expert study coach who can teach ANY subject — math, science, history, geography, economics, programming, literature, physics, chemistry, biology, English, or anything else academic.
@@ -34,6 +35,14 @@ conversation_history = []
 session_start_time = time.time()
 session_subject = "Any Subject"
 question_count = 0
+
+# Voice options
+VOICES = {
+    "marcus": "694f9389-aac1-45b6-b726-9d9369183238",
+    "kiefer": "228fca29-3a0a-435c-8728-5cb483251068",
+    "katie": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
+    "tessa": "6ccbfb76-1fc6-48f7-b71d-91ac6298247b"
+}
 
 def load_past_sessions():
     if os.path.exists(HISTORY_FILE):
@@ -73,6 +82,27 @@ def build_context_from_history():
     context += "Reinforce any weak areas from past sessions naturally in your coaching."
     return context
 
+def make_wav_bytes(raw_audio):
+    sample_rate = 22050
+    num_channels = 1
+    bits_per_sample = 16
+    buf = io.BytesIO()
+    buf.write(b'RIFF')
+    buf.write(struct.pack('<I', 36 + len(raw_audio)))
+    buf.write(b'WAVE')
+    buf.write(b'fmt ')
+    buf.write(struct.pack('<I', 16))
+    buf.write(struct.pack('<H', 1))
+    buf.write(struct.pack('<H', num_channels))
+    buf.write(struct.pack('<I', sample_rate))
+    buf.write(struct.pack('<I', sample_rate * num_channels * bits_per_sample // 8))
+    buf.write(struct.pack('<H', num_channels * bits_per_sample // 8))
+    buf.write(struct.pack('<H', bits_per_sample))
+    buf.write(b'data')
+    buf.write(struct.pack('<I', len(raw_audio)))
+    buf.write(raw_audio)
+    return buf.getvalue()
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -89,6 +119,7 @@ def chat():
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
+    selected_voice = request.form.get("voice", VOICES["marcus"])
     session_subject = selected_subject
 
     if len(audio_bytes) < 1000:
@@ -128,12 +159,30 @@ def chat():
     conversation_history.append({"role": "assistant", "content": coach_reply})
     print(f"Coach: {coach_reply}")
 
-    # Generate TTS with gTTS (free, no quota!)
-    tts = gTTS(text=coach_reply, lang='en', slow=False)
-    mp3_buffer = io.BytesIO()
-    tts.write_to_fp(mp3_buffer)
-    mp3_buffer.seek(0)
-    audio_b64 = base64.b64encode(mp3_buffer.read()).decode("utf-8")
+    # Generate TTS with Cartesia
+    try:
+        tts_response = cartesia_client.tts.generate(
+            model_id="sonic-2",
+            transcript=coach_reply,
+            voice={"mode": "id", "id": selected_voice},
+            output_format={
+                "container": "raw",
+                "encoding": "pcm_s16le",
+                "sample_rate": 22050,
+            },
+        )
+        raw_audio = tts_response.read()
+        wav_bytes = make_wav_bytes(raw_audio)
+        audio_b64 = base64.b64encode(wav_bytes).decode("utf-8")
+    except Exception as e:
+        print(f"TTS error: {e}")
+        # Fallback to gTTS if Cartesia fails
+        from gtts import gTTS
+        tts = gTTS(text=coach_reply, lang='en', slow=False)
+        mp3_buffer = io.BytesIO()
+        tts.write_to_fp(mp3_buffer)
+        mp3_buffer.seek(0)
+        audio_b64 = base64.b64encode(mp3_buffer.read()).decode("utf-8")
 
     return jsonify({
         "student_text": student_text,
