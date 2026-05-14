@@ -1,6 +1,7 @@
 // Animated particles
 (function() {
     const canvas = document.getElementById('particles');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let particles = [];
 
@@ -38,10 +39,8 @@
                 ? `rgba(0, 200, 255, ${opacity})`
                 : `rgba(255, 255, 255, ${opacity})`;
             ctx.fill();
-
             p.y -= p.speed;
             p.x += p.drift;
-
             if (p.y < -2) { p.y = canvas.height + 2; p.x = Math.random() * canvas.width; }
             if (p.x < -2) p.x = canvas.width + 2;
             if (p.x > canvas.width + 2) p.x = -2;
@@ -54,6 +53,7 @@
     draw();
     window.addEventListener('resize', () => { resize(); createParticles(); });
 })();
+
 let mediaRecorder = null;
 let audioChunks = [];
 let isRecording = false;
@@ -64,20 +64,21 @@ let selectedVoice = "694f9389-aac1-45b6-b726-9d9369183238";
 
 function selectSubject(subject, btn) {
     selectedSubject = subject;
-    document.querySelectorAll(".subject-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".subject-btn, .sel-btn[onclick*='selectSubject']").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 }
+
 function selectVoice(voiceId, btn) {
     selectedVoice = voiceId;
-    document.querySelectorAll(".voice-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".voice-btn, .sel-btn[onclick*='selectVoice']").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 }
+
 async function startRecording() {
     if (isRecording || isProcessing) return;
 
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
         shouldSend = false;
@@ -87,11 +88,8 @@ async function startRecording() {
         };
 
         mediaRecorder.onstop = () => {
-            if (shouldSend) {
-                sendAudio();
-            } else {
-                resetUI();
-            }
+            if (shouldSend) sendAudio();
+            else resetUI();
         };
 
         mediaRecorder.start(100);
@@ -146,11 +144,7 @@ async function sendAudio() {
     isProcessing = true;
 
     try {
-        if (audioChunks.length === 0) {
-            isProcessing = false;
-            resetUI();
-            return;
-        }
+        if (audioChunks.length === 0) { isProcessing = false; resetUI(); return; }
 
         const totalSize = audioChunks.reduce((acc, chunk) => acc + chunk.size, 0);
         if (totalSize < 1000) {
@@ -160,17 +154,13 @@ async function sendAudio() {
             return;
         }
 
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const formData = new FormData();
-        formData.append("audio", audioBlob, "recording.webm");
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm;codecs=opus" });
+const formData = new FormData();
+formData.append("audio", audioBlob, "recording.mp4");
         formData.append("subject", selectedSubject);
         formData.append("voice", selectedVoice);
 
-        const response = await fetch("/chat", {
-            method: "POST",
-            body: formData
-        });
-
+        const response = await fetch("/chat", { method: "POST", body: formData });
         if (!response.ok) throw new Error("Server error: " + response.status);
 
         const data = await response.json();
@@ -190,7 +180,6 @@ async function sendAudio() {
         await playAudio(data.audio_b64);
 
         if (speaking) speaking.style.display = "none";
-
         await new Promise(resolve => setTimeout(resolve, 1500));
 
     } catch (err) {
@@ -213,7 +202,7 @@ function playAudio(audioB64) {
             for (let i = 0; i < binary.length; i++) {
                 bytes[i] = binary.charCodeAt(i);
             }
-            const blob = new Blob([bytes], { type: "audio/wav" });
+            const blob = new Blob([bytes], { type: "audio/mp3" });
             const url = URL.createObjectURL(blob);
             const audio = new Audio(url);
             audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
@@ -236,7 +225,7 @@ function resetUI() {
     const status = document.getElementById("status");
     if (status) {
         status.style.display = "block";
-        status.innerText = "Hold the button and speak";
+        status.innerText = "hold to speak · release to send";
     }
 
     const thinking = document.getElementById("thinking");
@@ -257,7 +246,7 @@ function addMessage(role, text) {
     const div = document.createElement("div");
     div.className = `message ${role}`;
     div.innerHTML = `
-        <div class="label">${role === "student" ? "You" : "Coach"}</div>
+        <div class="label">${role === "student" ? "YOU" : "COACH"}</div>
         <div class="text">${text}</div>
     `;
     chatBox.appendChild(div);
@@ -289,18 +278,17 @@ async function resetSession() {
 async function confirmReset() {
     document.getElementById("summary-modal").style.display = "none";
     isProcessing = false;
-
     await fetch("/reset", { method: "POST" });
 
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML = `
         <div class="message coach">
-            <div class="label">Coach</div>
+            <div class="label">COACH</div>
             <div class="text">New session started! Pick a subject and let's go! 🎓</div>
         </div>
     `;
     resetUI();
-    document.getElementById("status").innerText = "Hold the button and speak";
+    document.getElementById("status").innerText = "hold to speak · release to send";
 }
 
 async function toggleHistory() {
@@ -319,7 +307,7 @@ async function toggleHistory() {
         const sessions = await response.json();
 
         if (sessions.length === 0) {
-            list.innerHTML = '<p class="no-history">No past sessions yet! Complete a session to see history.</p>';
+            list.innerHTML = '<p class="no-history">No past sessions yet!</p>';
             return;
         }
 
