@@ -60,7 +60,7 @@ let isRecording = false;
 let isProcessing = false;
 let shouldSend = false;
 let selectedSubject = "Any Subject";
-let selectedVoice = "694f9389-aac1-45b6-b726-9d9369183238";
+let selectedVoice = "1259b7e3-cb8a-43df-9446-30971a46b8b0";
 
 function selectSubject(subject, btn) {
     selectedSubject = subject;

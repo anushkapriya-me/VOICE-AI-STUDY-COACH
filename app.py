@@ -37,11 +37,12 @@ session_subject = "Any Subject"
 question_count = 0
 
 # Voice options
+# Voice options
 VOICES = {
-    "marcus": "694f9389-aac1-45b6-b726-9d9369183238",
-    "kiefer": "228fca29-3a0a-435c-8728-5cb483251068",
-    "katie": "f786b574-daa5-4673-aa0c-cbe3e8534c02",
-    "tessa": "6ccbfb76-1fc6-48f7-b71d-91ac6298247b"
+    "ind_male": "1259b7e3-cb8a-43df-9446-30971a46b8b0",
+    "ind_female": "7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8",
+    "us_male": "c1c65fc2-528a-4dde-a2c4-f822785c2704",
+    "us_female": "607167f6-9bf2-473c-accc-ac7b3b66b30b"
 }
 
 def load_past_sessions():
@@ -119,7 +120,7 @@ def chat():
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
-    selected_voice = request.form.get("voice", VOICES["marcus"])
+    selected_voice = request.form.get("voice", VOICES["ind_male"])
     session_subject = selected_subject
 
     if len(audio_bytes) < 1000:
