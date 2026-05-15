@@ -8,27 +8,23 @@
 </head>
 <body>
 
-<!-- Animated particles canvas -->
 <canvas id="particles"></canvas>
 
 <div class="container">
 
-    <!-- Top label -->
     <div class="top-label">
         <span class="dot"></span>
-        VOICE AI · STUDY COACH
+        AI STUDY COACH
         <span class="badge-live">LIVE</span>
     </div>
 
-    <!-- Hero title -->
-    <h1>Voice AI<br><span class="cyan">Study Coach</span></h1>
+    <h1>Your Personal<br><span class="accent">Study Coach</span></h1>
 
     <p class="subtitle">
-        This is not just a chatbot. It's a tutor.<br>
-        <span class="subtle">Speak. Learn. Grow. Repeat.</span>
+        Speak naturally. Learn deeply.<br>
+        <span class="subtle">Powered by AI. Built for students.</span>
     </p>
 
-    <!-- Pill badges -->
     <div class="badges">
         <span class="badge">⚡ Groq Powered</span>
         <span class="badge">🎙️ Real-time Voice</span>
@@ -36,23 +32,22 @@
         <span class="badge">📊 Session Tracking</span>
     </div>
 
-    <!-- Main card -->
     <div class="main-card">
 
-        <!-- Voice Selector -->
         <div class="selector-section">
-            <p class="section-label">🎙️ COACH VOICE</p>
+            <p class="section-label">Coach Voice</p>
             <div class="voice-grid">
-                <button class="sel-btn active" onclick="selectVoice('1259b7e3-cb8a-43df-9446-30971a46b8b0', this)">Indian Male</button>
-<button class="sel-btn" onclick="selectVoice('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', this)">Indian Female</button>
-<button class="sel-btn" onclick="selectVoice('c1c65fc2-528a-4dde-a2c4-f822785c2704', this)">🇺🇸 US Male</button>
-<button class="sel-btn" onclick="selectVoice('607167f6-9bf2-473c-accc-ac7b3b66b30b', this)">🇺🇸 US Female</button>
+                <button class="sel-btn active" onclick="selectVoice('1259b7e3-cb8a-43df-9446-30971a46b8b0', this)">👨 Male</button>
+                <button class="sel-btn" onclick="selectVoice('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', this)">👩 Female</button>
+                <button class="sel-btn" onclick="selectVoice('c1c65fc2-528a-4dde-a2c4-f822785c2704', this)">🇺🇸 US Male</button>
+                <button class="sel-btn" onclick="selectVoice('607167f6-9bf2-473c-accc-ac7b3b66b30b', this)">🇺🇸 US Female</button>
             </div>
         </div>
 
-        <!-- Subject Selector -->
+        <div class="divider"></div>
+
         <div class="selector-section">
-            <p class="section-label">📚 SUBJECT</p>
+            <p class="section-label">Subject</p>
             <div class="subject-grid">
                 <button class="sel-btn" onclick="selectSubject('Math', this)">🔢 Math</button>
                 <button class="sel-btn" onclick="selectSubject('Science', this)">🔬 Science</button>
@@ -66,15 +61,15 @@
             </div>
         </div>
 
-        <!-- Chat box -->
+        <div class="divider"></div>
+
         <div class="chat-box" id="chat-box">
             <div class="message coach">
-                <div class="label">COACH</div>
-                <div class="text">Hello! I'm your AI study coach. Pick a subject above and hold the mic button to ask me anything! 🎓</div>
+                <div class="label">Coach</div>
+                <div class="text">Hello! I'm your personal AI study coach. Choose a subject above and hold the mic button to begin your session. 🎓</div>
             </div>
         </div>
 
-        <!-- Animations -->
         <div id="waveform" style="display:none">
             <div class="wave-bar"></div>
             <div class="wave-bar"></div>
@@ -99,7 +94,6 @@
             <span class="speaking-text">speaking...</span>
         </div>
 
-        <!-- Mic button -->
         <button class="mic-btn" id="mic-btn"
             onmousedown="startRecording()"
             onmouseup="stopRecording()"
@@ -112,15 +106,14 @@
             <button class="action-btn" onclick="resetSession()">📊 End Session</button>
             <button class="action-btn" onclick="toggleHistory()">📅 History</button>
         </div>
-    </div>
 
-    <p class="footer">Built with Claude AI · Groq · Cartesia</p>
+    </div>
 </div>
 
 <!-- Summary Modal -->
 <div id="summary-modal" style="display:none">
     <div class="modal-box">
-        <h2>SESSION SUMMARY</h2>
+        <h2>Session Summary</h2>
         <div class="summary-grid">
             <div class="summary-item">
                 <div class="summary-label">Duration</div>
@@ -136,18 +129,18 @@
             </div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">✅ TOPICS COVERED</div>
+            <div class="summary-label">✅ Topics Covered</div>
             <div class="modal-text" id="sum-topics">—</div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">⚠️ NEEDS REVIEW</div>
+            <div class="summary-label">⚠️ Needs Review</div>
             <div class="modal-text" id="sum-weak">—</div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">💡 TONIGHT'S TIP</div>
+            <div class="summary-label">💡 Tonight's Tip</div>
             <div class="modal-text" id="sum-tip">—</div>
         </div>
-        <button class="glow-btn" onclick="confirmReset()">START NEW SESSION →</button>
+        <button class="glow-btn" onclick="confirmReset()">Start New Session →</button>
     </div>
 </div>
 
@@ -155,7 +148,7 @@
 <div id="history-panel" style="display:none">
     <div class="modal-box">
         <div class="modal-header">
-            <span>PAST SESSIONS</span>
+            <span>Past Sessions</span>
             <button onclick="toggleHistory()" class="close-btn">✕</button>
         </div>
         <div id="history-list">
@@ -164,6 +157,6 @@
     </div>
 </div>
 
-<script src="/static/script.js?v=9"></script>
+<script src="/static/script.js?v=11"></script>
 </body>
 </html>
