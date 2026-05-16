@@ -177,18 +177,13 @@ def chat():
         audio_b64 = base64.b64encode(wav_bytes).decode("utf-8")
     except Exception as e:
         print(f"TTS error: {e}")
-        # Fallback to gTTS if Cartesia fails
-        from gtts import gTTS
-        tts = gTTS(text=coach_reply, lang='en', slow=False)
-        mp3_buffer = io.BytesIO()
-        tts.write_to_fp(mp3_buffer)
-        mp3_buffer.seek(0)
-        audio_b64 = base64.b64encode(mp3_buffer.read()).decode("utf-8")
+        audio_b64 = ""
 
     return jsonify({
         "student_text": student_text,
         "coach_reply": coach_reply,
-        "audio_b64": audio_b64
+        "audio_b64": audio_b64,
+        "tts_available": bool(audio_b64)
     })
 
 @app.route("/summary", methods=["GET"])

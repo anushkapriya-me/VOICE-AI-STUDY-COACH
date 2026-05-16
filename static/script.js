@@ -177,7 +177,9 @@ formData.append("audio", audioBlob, "recording.mp4");
         const status = document.getElementById("status");
         if (status) status.style.display = "none";
 
-        await playAudio(data.audio_b64);
+        if (data.audio_b64) {
+            await playAudio(data.audio_b64);
+        }
 
         if (speaking) speaking.style.display = "none";
         await new Promise(resolve => setTimeout(resolve, 1500));
