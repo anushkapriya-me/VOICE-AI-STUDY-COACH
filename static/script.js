@@ -12,18 +12,18 @@
 
     function createParticles() {
         particles = [];
-        const count = Math.floor((canvas.width * canvas.height) / 8000);
+        const count = Math.floor((canvas.width * canvas.height) / 10000);
         for (let i = 0; i < count; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                r: Math.random() * 1.5 + 0.3,
-                opacity: Math.random() * 0.7 + 0.1,
-                speed: Math.random() * 0.15 + 0.02,
-                drift: (Math.random() - 0.5) * 0.08,
+                r: Math.random() * 1.2 + 0.2,
+                opacity: Math.random() * 0.5 + 0.1,
+                speed: Math.random() * 0.12 + 0.02,
+                drift: (Math.random() - 0.5) * 0.06,
                 twinkle: Math.random() * Math.PI * 2,
-                twinkleSpeed: Math.random() * 0.02 + 0.005,
-                cyan: Math.random() < 0.08
+                twinkleSpeed: Math.random() * 0.015 + 0.004,
+                gold: Math.random() < 0.06
             });
         }
     }
@@ -32,11 +32,11 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
             p.twinkle += p.twinkleSpeed;
-            const opacity = p.opacity * (0.6 + 0.4 * Math.sin(p.twinkle));
+            const opacity = p.opacity * (0.5 + 0.5 * Math.sin(p.twinkle));
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = p.cyan
-                ? `rgba(0, 200, 255, ${opacity})`
+            ctx.fillStyle = p.gold
+                ? `rgba(212, 175, 100, ${opacity})`
                 : `rgba(255, 255, 255, ${opacity})`;
             ctx.fill();
             p.y -= p.speed;
@@ -54,26 +54,63 @@
     window.addEventListener('resize', () => { resize(); createParticles(); });
 })();
 
+// App state
+let selectedVoice = "1259b7e3-cb8a-43df-9446-30971a46b8b0";
+let selectedCoachName = "Dr. Rohan";
+let selectedCoachAvatar = "👨‍🏫";
+let selectedSubject = "Any Subject";
 let mediaRecorder = null;
 let audioChunks = [];
 let isRecording = false;
 let isProcessing = false;
 let shouldSend = false;
-let selectedSubject = "Any Subject";
-let selectedVoice = "1259b7e3-cb8a-43df-9446-30971a46b8b0";
 
-function selectSubject(subject, btn) {
-    selectedSubject = subject;
-    document.querySelectorAll(".subject-btn, .sel-btn[onclick*='selectSubject']").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+// Coach data
+const coaches = {
+    "1259b7e3-cb8a-43df-9446-30971a46b8b0": { name: "Dr. Rohan", avatar: "👨‍🏫" },
+    "7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8": { name: "Prof. Priya", avatar: "👩‍🏫" },
+    "c1c65fc2-528a-4dde-a2c4-f822785c2704": { name: "Coach James", avatar: "🧑‍💼" },
+    "607167f6-9bf2-473c-accc-ac7b3b66b30b": { name: "Dr. Olivia", avatar: "👩‍💻" }
+};
+
+// Screen navigation
+function goToScreen(num) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(`screen-${num}`).classList.add('active');
+    window.scrollTo(0, 0);
 }
 
-function selectVoice(voiceId, btn) {
+// Select coach
+function selectCoach(voiceId, name, el) {
     selectedVoice = voiceId;
-    document.querySelectorAll(".voice-btn, .sel-btn[onclick*='selectVoice']").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+    selectedCoachName = name;
+    selectedCoachAvatar = coaches[voiceId].avatar;
+    document.querySelectorAll('.coach-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
 }
 
+// Select subject on onboarding
+function selectSubjectOnboard(subject, el) {
+    selectedSubject = subject;
+    document.querySelectorAll('.subject-card').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+}
+
+// Start session - go to main app
+function startSession() {
+    // Update coach bar
+    document.getElementById('bar-name').innerText = selectedCoachName;
+    document.getElementById('bar-avatar').innerText = selectedCoachAvatar;
+    document.getElementById('bar-subject').innerText = selectedSubject;
+
+    // Update welcome message
+    document.getElementById('welcome-text').innerText =
+        `Hello! I'm ${selectedCoachName}, your AI study coach. We'll be focusing on ${selectedSubject} today. Hold the mic button and ask me anything! 🎓`;
+
+    goToScreen(4);
+}
+
+// Recording
 async function startRecording() {
     if (isRecording || isProcessing) return;
 
@@ -119,7 +156,6 @@ function stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.stream.getTracks().forEach(track => track.stop());
     } catch (err) {
-        console.error("Stop error:", err);
         resetUI();
         return;
     }
@@ -149,16 +185,17 @@ async function sendAudio() {
         const totalSize = audioChunks.reduce((acc, chunk) => acc + chunk.size, 0);
         if (totalSize < 1000) {
             isProcessing = false;
-            document.getElementById("status").innerText = "Too short! Hold longer and speak.";
+            document.getElementById("status").innerText = "Too short! Hold longer.";
             resetUI();
             return;
         }
 
         const audioBlob = new Blob(audioChunks, { type: "audio/webm;codecs=opus" });
-const formData = new FormData();
-formData.append("audio", audioBlob, "recording.mp4");
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "recording.mp4");
         formData.append("subject", selectedSubject);
         formData.append("voice", selectedVoice);
+        formData.append("coach_name", selectedCoachName);
 
         const response = await fetch("/chat", { method: "POST", body: formData });
         if (!response.ok) throw new Error("Server error: " + response.status);
@@ -177,9 +214,7 @@ formData.append("audio", audioBlob, "recording.mp4");
         const status = document.getElementById("status");
         if (status) status.style.display = "none";
 
-        if (data.audio_b64) {
-            await playAudio(data.audio_b64);
-        }
+        if (data.audio_b64) await playAudio(data.audio_b64);
 
         if (speaking) speaking.style.display = "none";
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -189,7 +224,6 @@ formData.append("audio", audioBlob, "recording.mp4");
         document.getElementById("status").innerText = "Something went wrong. Try again!";
         const thinking = document.getElementById("thinking");
         if (thinking) thinking.style.display = "none";
-
     } finally {
         isProcessing = false;
         resetUI();
@@ -201,10 +235,8 @@ function playAudio(audioB64) {
         try {
             const binary = atob(audioB64);
             const bytes = new Uint8Array(binary.length);
-            for (let i = 0; i < binary.length; i++) {
-                bytes[i] = binary.charCodeAt(i);
-            }
-            const blob = new Blob([bytes], { type: "audio/mp3" });
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            const blob = new Blob([bytes], { type: "audio/wav" });
             const url = URL.createObjectURL(blob);
             const audio = new Audio(url);
             audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
@@ -220,24 +252,16 @@ function playAudio(audioB64) {
 function resetUI() {
     if (isProcessing) return;
 
-    document.getElementById("mic-btn").classList.remove("loading");
-    document.getElementById("mic-btn").classList.remove("recording");
+    document.getElementById("mic-btn").classList.remove("loading", "recording");
     document.getElementById("mic-btn").innerText = "🎤";
 
     const status = document.getElementById("status");
-    if (status) {
-        status.style.display = "block";
-        status.innerText = "hold to speak · release to send";
-    }
+    if (status) { status.style.display = "block"; status.innerText = "hold to speak · release to send"; }
 
-    const thinking = document.getElementById("thinking");
-    if (thinking) thinking.style.display = "none";
-
-    const speaking = document.getElementById("speaking");
-    if (speaking) speaking.style.display = "none";
-
-    const waveform = document.getElementById("waveform");
-    if (waveform) waveform.style.display = "none";
+    ["thinking", "speaking", "waveform"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
 
     audioChunks = [];
     shouldSend = false;
@@ -248,7 +272,7 @@ function addMessage(role, text) {
     const div = document.createElement("div");
     div.className = `message ${role}`;
     div.innerHTML = `
-        <div class="label">${role === "student" ? "YOU" : "COACH"}</div>
+        <div class="label">${role === "student" ? "YOU" : selectedCoachName.toUpperCase()}</div>
         <div class="text">${text}</div>
     `;
     chatBox.appendChild(div);
@@ -272,7 +296,6 @@ async function resetSession() {
         document.getElementById("summary-modal").style.display = "flex";
 
     } catch (err) {
-        console.error("Summary error:", err);
         confirmReset();
     }
 }
@@ -285,12 +308,14 @@ async function confirmReset() {
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML = `
         <div class="message coach">
-            <div class="label">COACH</div>
-            <div class="text">New session started! Pick a subject and let's go! 🎓</div>
+            <div class="label">${selectedCoachName.toUpperCase()}</div>
+            <div class="text">New session started! What would you like to study? 🎓</div>
         </div>
     `;
     resetUI();
-    document.getElementById("status").innerText = "hold to speak · release to send";
+
+    // Go back to coach selection
+    goToScreen(2);
 }
 
 async function toggleHistory() {

@@ -121,6 +121,7 @@ def chat():
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
     selected_voice = request.form.get("voice", VOICES["ind_male"])
+    coach_name = request.form.get("coach_name", "your coach")
     session_subject = selected_subject
 
     if len(audio_bytes) < 1000:
@@ -149,8 +150,7 @@ def chat():
     conversation_history.append({"role": "user", "content": student_text})
 
     history_context = build_context_from_history()
-    subject_prompt = SYSTEM_PROMPT + history_context + f"\n\nCurrent session focus: {selected_subject}."
-
+    subject_prompt = SYSTEM_PROMPT + history_context + f"\n\nYour name is {coach_name}. Current session focus: {selected_subject}. Always refer to yourself as {coach_name} when needed."
     response = groq_client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "system", "content": subject_prompt}] + conversation_history

@@ -10,63 +10,144 @@
 
 <canvas id="particles"></canvas>
 
-<div class="container">
+<!-- SCREEN 1: Welcome -->
+<div class="screen active" id="screen-1">
+    <div class="screen-inner">
+        <div class="top-label">
+            <span class="dot"></span>
+            AI STUDY COACH
+            <span class="badge-live">LIVE</span>
+        </div>
 
-    <div class="top-label">
-        <span class="dot"></span>
-        AI STUDY COACH
-        <span class="badge-live">LIVE</span>
-    </div>
+        <h1>Your Personal<br><span class="accent">Study Coach</span></h1>
 
-    <h1>Your Personal<br><span class="accent">Study Coach</span></h1>
+        <p class="subtitle">
+            Speak naturally. Learn deeply.<br>
+            <span class="subtle">Powered by AI. Built for students.</span>
+        </p>
 
-    <p class="subtitle">
-        Speak naturally. Learn deeply.<br>
-        <span class="subtle">Powered by AI. Built for students.</span>
-    </p>
-
-    <div class="badges">
-        <span class="badge">⚡ Groq Powered</span>
-        <span class="badge">🎙️ Real-time Voice</span>
-        <span class="badge">🧠 Spaced Repetition</span>
-        <span class="badge">📊 Session Tracking</span>
-    </div>
-
-    <div class="main-card">
-
-        <div class="selector-section">
-            <p class="section-label">Coach Voice</p>
-            <div class="voice-grid">
-                <button class="sel-btn active" onclick="selectVoice('1259b7e3-cb8a-43df-9446-30971a46b8b0', this)">👨 Male</button>
-                <button class="sel-btn" onclick="selectVoice('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', this)">👩 Female</button>
-                <button class="sel-btn" onclick="selectVoice('c1c65fc2-528a-4dde-a2c4-f822785c2704', this)">🇺🇸 US Male</button>
-                <button class="sel-btn" onclick="selectVoice('607167f6-9bf2-473c-accc-ac7b3b66b30b', this)">🇺🇸 US Female</button>
+        <div class="earphone-card">
+            <div class="earphone-icon">🎧</div>
+            <h3>Before we begin</h3>
+            <p>For the best experience, please wear <strong>earphones or earbuds</strong>. This prevents echo and ensures crystal clear conversations with your coach.</p>
+            <div class="earphone-tips">
+                <div class="tip">✅ Earphones on</div>
+                <div class="tip">✅ Quiet environment</div>
+                <div class="tip">✅ Speak clearly</div>
             </div>
         </div>
 
-        <div class="divider"></div>
+        <button class="primary-btn" onclick="goToScreen(2)">
+            I'm wearing earphones →
+        </button>
+    </div>
+</div>
 
-        <div class="selector-section">
-            <p class="section-label">Subject</p>
-            <div class="subject-grid">
-                <button class="sel-btn" onclick="selectSubject('Math', this)">🔢 Math</button>
-                <button class="sel-btn" onclick="selectSubject('Science', this)">🔬 Science</button>
-                <button class="sel-btn" onclick="selectSubject('History', this)">📖 History</button>
-                <button class="sel-btn" onclick="selectSubject('Programming', this)">💻 Programming</button>
-                <button class="sel-btn" onclick="selectSubject('Geography', this)">🌍 Geography</button>
-                <button class="sel-btn" onclick="selectSubject('English', this)">📝 English</button>
-                <button class="sel-btn" onclick="selectSubject('Chemistry', this)">⚗️ Chemistry</button>
-                <button class="sel-btn" onclick="selectSubject('Biology', this)">🧬 Biology</button>
-                <button class="sel-btn active" onclick="selectSubject('Any Subject', this)">🎯 Any</button>
+<!-- SCREEN 2: Choose Coach -->
+<div class="screen" id="screen-2">
+    <div class="screen-inner">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen(1)">← Back</button>
+            <div class="step-indicator">
+                <div class="step done">1</div>
+                <div class="step-line done"></div>
+                <div class="step active">2</div>
+                <div class="step-line"></div>
+                <div class="step">3</div>
             </div>
         </div>
 
-        <div class="divider"></div>
+        <h2>Choose your<br><span class="accent">Coach</span></h2>
+        <p class="screen-subtitle">Each coach has a unique teaching style</p>
+
+        <div class="coach-grid">
+            <div class="coach-card active" onclick="selectCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', this)">
+                <div class="coach-flag">🇮🇳</div>
+                <div class="coach-avatar">👨‍🏫</div>
+                <div class="coach-name">Dr. Rohan</div>
+                <div class="coach-style">Calm & Analytical</div>
+            </div>
+            <div class="coach-card" onclick="selectCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', this)">
+                <div class="coach-flag">🇮🇳</div>
+                <div class="coach-avatar">👩‍🏫</div>
+                <div class="coach-name">Prof. Priya</div>
+                <div class="coach-style">Warm & Encouraging</div>
+            </div>
+            <div class="coach-card" onclick="selectCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James', this)">
+                <div class="coach-flag">🇺🇸</div>
+                <div class="coach-avatar">🧑‍💼</div>
+                <div class="coach-name">Coach James</div>
+                <div class="coach-style">Energetic & Motivating</div>
+            </div>
+            <div class="coach-card" onclick="selectCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia', this)">
+                <div class="coach-flag">🇺🇸</div>
+                <div class="coach-avatar">👩‍💻</div>
+                <div class="coach-name">Dr. Olivia</div>
+                <div class="coach-style">Clear & Precise</div>
+            </div>
+        </div>
+
+        <button class="primary-btn" onclick="goToScreen(3)">
+            Next →
+        </button>
+    </div>
+</div>
+
+<!-- SCREEN 3: Choose Subject -->
+<div class="screen" id="screen-3">
+    <div class="screen-inner">
+        <div class="screen-header">
+            <button class="back-btn" onclick="goToScreen(2)">← Back</button>
+            <div class="step-indicator">
+                <div class="step done">1</div>
+                <div class="step-line done"></div>
+                <div class="step done">2</div>
+                <div class="step-line done"></div>
+                <div class="step active">3</div>
+            </div>
+        </div>
+
+        <h2>What are we<br><span class="accent">studying today?</span></h2>
+        <p class="screen-subtitle">Pick a subject to focus your session</p>
+
+        <div class="subject-grid-onboard">
+            <button class="subject-card" onclick="selectSubjectOnboard('Math', this)">🔢<br>Math</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('Science', this)">🔬<br>Science</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('History', this)">📖<br>History</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('Programming', this)">💻<br>Programming</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('Geography', this)">🌍<br>Geography</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('English', this)">📝<br>English</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('Chemistry', this)">⚗️<br>Chemistry</button>
+            <button class="subject-card" onclick="selectSubjectOnboard('Biology', this)">🧬<br>Biology</button>
+            <button class="subject-card active" onclick="selectSubjectOnboard('Any Subject', this)">🎯<br>Any</button>
+        </div>
+
+        <button class="primary-btn" onclick="startSession()">
+            Start Session →
+        </button>
+    </div>
+</div>
+
+<!-- SCREEN 4: Main App -->
+<div class="screen" id="screen-4">
+    <div class="screen-inner">
+
+        <!-- Coach info bar -->
+        <div class="coach-bar">
+            <div class="coach-bar-info">
+                <span class="coach-bar-avatar" id="bar-avatar">👨‍🏫</span>
+                <div>
+                    <div class="coach-bar-name" id="bar-name">Dr. Rohan</div>
+                    <div class="coach-bar-subject" id="bar-subject">Any Subject</div>
+                </div>
+            </div>
+            <button class="change-btn" onclick="goToScreen(2)">Change</button>
+        </div>
 
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">Coach</div>
-                <div class="text">Hello! I'm your personal AI study coach. Choose a subject above and hold the mic button to begin your session. 🎓</div>
+                <div class="text" id="welcome-text">Hello! I'm your AI study coach. Hold the mic button and ask me anything! 🎓</div>
             </div>
         </div>
 
@@ -157,6 +238,6 @@
     </div>
 </div>
 
-<script src="/static/script.js?v=11"></script>
+<script src="/static/script.js?v=12"></script>
 </body>
 </html>
