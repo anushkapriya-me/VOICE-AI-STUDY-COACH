@@ -64,6 +64,7 @@ let audioChunks = [];
 let isRecording = false;
 let isProcessing = false;
 let shouldSend = false;
+let recordingStartTime = 0;
 
 // Coach data
 const coaches = {
@@ -72,6 +73,7 @@ const coaches = {
     "c1c65fc2-528a-4dde-a2c4-f822785c2704": { name: "Coach James", avatar: "🧑‍💼" },
     "607167f6-9bf2-473c-accc-ac7b3b66b30b": { name: "Dr. Olivia", avatar: "👩‍💻" }
 };
+
 
 // Screen navigation
 function goToScreen(num) {
@@ -89,24 +91,20 @@ function selectCoach(voiceId, name, el) {
     el.classList.add('active');
 }
 
-// Select subject on onboarding
+// Select subject
 function selectSubjectOnboard(subject, el) {
     selectedSubject = subject;
     document.querySelectorAll('.subject-card').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
 }
 
-// Start session - go to main app
+// Start session
 function startSession() {
-    // Update coach bar
     document.getElementById('bar-name').innerText = selectedCoachName;
     document.getElementById('bar-avatar').innerText = selectedCoachAvatar;
     document.getElementById('bar-subject').innerText = selectedSubject;
-
-    // Update welcome message
     document.getElementById('welcome-text').innerText =
         `Hello! I'm ${selectedCoachName}, your AI study coach. We'll be focusing on ${selectedSubject} today. Hold the mic button and ask me anything! 🎓`;
-
     goToScreen(4);
 }
 
@@ -132,13 +130,13 @@ async function startRecording() {
         mediaRecorder.start(100);
         isRecording = true;
         shouldSend = false;
+        recordingStartTime = Date.now();
 
         document.getElementById("mic-btn").classList.add("recording");
-        document.getElementById("mic-btn").innerText = "⏹";
         document.getElementById("status").innerText = "Recording... release to send!";
 
-        const waveform = document.getElementById("waveform");
-        if (waveform) waveform.style.display = "flex";
+        // Show animated waveform on mic
+
 
     } catch (err) {
         console.error("Mic error:", err);
@@ -148,6 +146,37 @@ async function startRecording() {
 
 function stopRecording() {
     if (!isRecording || !mediaRecorder) return;
+
+    const recordingDuration = Date.now() - recordingStartTime;
+
+    // Stop mic animation
+
+    // Minimum 1.5 seconds required
+    if (recordingDuration < 1500) {
+        isRecording = false;
+        shouldSend = false;
+        try {
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        } catch(e) {}
+        mediaRecorder = null;
+        audioChunks = [];
+
+        document.getElementById("mic-btn").classList.remove("recording");
+        document.getElementById("mic-btn").innerText = "🎤";
+
+    
+
+        const status = document.getElementById("status");
+        if (status) {
+            status.style.display = "block";
+            status.innerText = "Hold longer to speak! (min 1.5 sec)";
+            setTimeout(() => {
+                status.innerText = "hold to speak · release to send";
+            }, 2000);
+        }
+        return;
+    }
 
     shouldSend = true;
     isRecording = false;
@@ -185,7 +214,7 @@ async function sendAudio() {
         const totalSize = audioChunks.reduce((acc, chunk) => acc + chunk.size, 0);
         if (totalSize < 1000) {
             isProcessing = false;
-            document.getElementById("status").innerText = "Too short! Hold longer.";
+            document.getElementById("status").innerText = "Too short! Try again.";
             resetUI();
             return;
         }
@@ -252,13 +281,19 @@ function playAudio(audioB64) {
 function resetUI() {
     if (isProcessing) return;
 
-    document.getElementById("mic-btn").classList.remove("loading", "recording");
-    document.getElementById("mic-btn").innerText = "🎤";
+    const micBtn = document.getElementById("mic-btn");
+    micBtn.classList.remove("loading", "recording");
+    micBtn.innerText = "🎤";
 
+    // Restore flat waveform on mic
+   
     const status = document.getElementById("status");
-    if (status) { status.style.display = "block"; status.innerText = "hold to speak · release to send"; }
+    if (status) {
+        status.style.display = "block";
+        status.innerText = "hold to speak · release to send";
+    }
 
-    ["thinking", "speaking", "waveform"].forEach(id => {
+    ["thinking", "speaking"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
@@ -313,8 +348,6 @@ async function confirmReset() {
         </div>
     `;
     resetUI();
-
-    // Go back to coach selection
     goToScreen(2);
 }
 
