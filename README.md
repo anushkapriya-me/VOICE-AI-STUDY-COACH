@@ -1,3 +1,15 @@
+---
+title: Voice AI Study Coach
+emoji: 🎓
+colorFrom: purple
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
+
+
+
 # 🎓 Voice AI Study Coach
 > A real-time voice-powered AI tutoring system that listens, thinks, and speaks back — like a personal tutor available 24/7.
 [Live Demo](https://huggingface.co/spaces/AnushkaPriya/voice-coach)** · **[GitHub](https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH)**
