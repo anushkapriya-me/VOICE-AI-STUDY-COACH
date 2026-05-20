@@ -1,257 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Voice AI Study Coach</title>
-
-    <!-- Main CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
-
-    <!-- FAVICONS -->
-    <link rel="apple-touch-icon" sizes="180x180"
-    href="{{ url_for('static', filename='assets/favicon_io/apple-touch-icon.png') }}">
-
-    <link rel="icon" type="image/png" sizes="32x32"
-    href="{{ url_for('static', filename='assets/favicon_io/favicon-32x32.png') }}">
-
-    <link rel="icon" type="image/png" sizes="16x16"
-    href="{{ url_for('static', filename='assets/favicon_io/favicon-16x16.png') }}">
-
-    <link rel="shortcut icon"
-    href="{{ url_for('static', filename='assets/favicon_io/favicon.ico') }}">
-
-    <link rel="manifest"
-    href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
-
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#1b1464">
 </head>
+<body>
 
 <canvas id="particles"></canvas>
 
-<!-- SCREEN 1: Welcome -->
-<div class="screen active" id="screen-1">
-    <div class="screen-inner">
-        <div class="top-label">
-            <span class="dot"></span>
-            AI STUDY COACH
-            <span class="badge-live">LIVE</span>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo-area">
+        <div class="logo-dot"></div>
+        <span>Voice AI Study Coach</span>
+    </div>
+    <div class="nav-links">
+        <a href="#coaches">Coaches</a>
+        <a href="#subjects">Subjects</a>
+        <a href="#app">Start Learning</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="hero-left">
+        <div class="top-badge">
+            <span class="live-dot"></span>
+            AI POWERED LEARNING
         </div>
 
-        <h1>Your Personal<br><span class="accent">Study Coach</span></h1>
+        <h1>
+            Your AI Tutor<br>
+            That <span class="gradient-text">Listens, Understands</span><br>
+            & Teaches
+        </h1>
 
-        <p class="subtitle">
-            Speak naturally. Learn deeply.<br>
-            <span class="subtle">Powered by AI. Built for students.</span>
+        <p class="hero-subtitle">
+            Speak naturally. Learn deeply. Your intelligent AI voice coach
+            helps you study smarter with real-time conversations.
         </p>
 
-        <div class="earphone-card">
-            <div class="earphone-icon">🎧</div>
-            <h3>Before we begin</h3>
-            <p>For the best experience, please wear <strong>earphones or earbuds</strong>. This prevents echo and ensures crystal clear conversations with your coach.</p>
-            <div class="earphone-tips">
-                <div class="tip">✅ Earphones on</div>
-                <div class="tip">✅ Quiet environment</div>
-                <div class="tip">✅ Speak clearly</div>
-            </div>
+        <div class="hero-buttons">
+            <button class="primary-btn" onclick="scrollToApp()">Start Learning →</button>
+            <a href="https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH" target="_blank">
+                <button class="secondary-btn">GitHub ↗</button>
+            </a>
         </div>
 
-        <button class="primary-btn" onclick="goToScreen(2)">
-            I'm wearing earphones →
-        </button>
+        <div class="hero-stats">
+            <div class="stat-card glass">
+                <h3>4</h3>
+                <p>AI Coaches</p>
+            </div>
+            <div class="stat-card glass">
+                <h3>9</h3>
+                <p>Subjects</p>
+            </div>
+            <div class="stat-card glass">
+                <h3>24/7</h3>
+                <p>Available</p>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- SCREEN 2: Choose Coach -->
-<div class="screen" id="screen-2">
-    <div class="screen-inner">
-        <div class="screen-header">
-            <button class="back-btn" onclick="goToScreen(1)">← Back</button>
-            <div class="step-indicator">
-                <div class="step done">1</div>
-                <div class="step-line done"></div>
-                <div class="step active">2</div>
-                <div class="step-line"></div>
-                <div class="step">3</div>
-            </div>
+    <div class="hero-right">
+        <div class="ai-orb">
+            <div class="orb-ring ring1"></div>
+            <div class="orb-ring ring2"></div>
+            <div class="orb-core">🎓</div>
         </div>
-
-        <h2>Choose your<br><span class="accent">Coach</span></h2>
-        <p class="screen-subtitle">Each coach has a unique teaching style</p>
-
-        <div class="coach-grid">
-            <div class="coach-card active" onclick="selectCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', this)">
-                <div class="coach-flag">🇮🇳</div>
-                <div class="coach-avatar">👨‍🏫</div>
-                <div class="coach-name">Dr. Rohan</div>
-                <div class="coach-style">Calm & Analytical</div>
-            </div>
-            <div class="coach-card" onclick="selectCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', this)">
-                <div class="coach-flag">🇮🇳</div>
-                <div class="coach-avatar">👩‍🏫</div>
-                <div class="coach-name">Prof. Priya</div>
-                <div class="coach-style">Warm & Encouraging</div>
-            </div>
-            <div class="coach-card" onclick="selectCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James', this)">
-                <div class="coach-flag">🇺🇸</div>
-                <div class="coach-avatar">🧑‍💼</div>
-                <div class="coach-name">Coach James</div>
-                <div class="coach-style">Energetic & Motivating</div>
-            </div>
-            <div class="coach-card" onclick="selectCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia', this)">
-                <div class="coach-flag">🇺🇸</div>
-                <div class="coach-avatar">👩‍💻</div>
-                <div class="coach-name">Dr. Olivia</div>
-                <div class="coach-style">Clear & Precise</div>
-            </div>
-        </div>
-
-        <button class="primary-btn" onclick="goToScreen(3)">
-            Next →
-        </button>
     </div>
-</div>
+</section>
 
-<!-- SCREEN 3: Choose Subject -->
-<div class="screen" id="screen-3">
-    <div class="screen-inner">
-        <div class="screen-header">
-            <button class="back-btn" onclick="goToScreen(2)">← Back</button>
-            <div class="step-indicator">
-                <div class="step done">1</div>
-                <div class="step-line done"></div>
-                <div class="step done">2</div>
-                <div class="step-line done"></div>
-                <div class="step active">3</div>
-            </div>
-        </div>
-
-        <h2>What are we<br><span class="accent">studying today?</span></h2>
-        <p class="screen-subtitle">Pick a subject to focus your session</p>
-
-        <div class="subject-grid-onboard">
-            <button class="subject-card" onclick="selectSubjectOnboard('Math', this)">🔢<br>Math</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('Science', this)">🔬<br>Science</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('History', this)">📖<br>History</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('Programming', this)">💻<br>Programming</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('Geography', this)">🌍<br>Geography</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('English', this)">📝<br>English</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('Chemistry', this)">⚗️<br>Chemistry</button>
-            <button class="subject-card" onclick="selectSubjectOnboard('Biology', this)">🧬<br>Biology</button>
-            <button class="subject-card active" onclick="selectSubjectOnboard('Any Subject', this)">🎯<br>Any</button>
-        </div>
-
-        <button class="primary-btn" onclick="startSession()">
-            Start Session →
-        </button>
+<!-- COACHES -->
+<section class="coach-section" id="coaches">
+    <div class="section-heading">
+        <span class="section-tag">AI COACHES</span>
+        <h2>Choose Your Coach</h2>
+        <p>Different teaching styles for different learners</p>
     </div>
-</div>
 
-<!-- SCREEN 4: Main App -->
-<div class="screen" id="screen-4">
-    <div class="screen-inner">
+    <div class="coach-grid">
+        <div class="coach-card glass" onclick="selectCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', '👨‍🏫', this)">
+            <div class="coach-avatar">👨‍🏫</div>
+            <h3>Dr. Rohan</h3>
+            <p>🇮🇳 Calm & Analytical</p>
+            <div class="coach-selected">✓ Selected</div>
+        </div>
+        <div class="coach-card glass" onclick="selectCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', '👩‍🏫', this)">
+            <div class="coach-avatar">👩‍🏫</div>
+            <h3>Prof. Priya</h3>
+            <p>🇮🇳 Warm & Encouraging</p>
+            <div class="coach-selected">✓ Selected</div>
+        </div>
+        <div class="coach-card glass" onclick="selectCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James', '🧑‍💼', this)">
+            <div class="coach-avatar">🧑‍💼</div>
+            <h3>Coach James</h3>
+            <p>🇺🇸 Energetic & Motivating</p>
+            <div class="coach-selected">✓ Selected</div>
+        </div>
+        <div class="coach-card glass" onclick="selectCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia', '👩‍💻', this)">
+            <div class="coach-avatar">👩‍💻</div>
+            <h3>Dr. Olivia</h3>
+            <p>🇺🇸 Clear & Precise</p>
+            <div class="coach-selected">✓ Selected</div>
+        </div>
+    </div>
+</section>
+
+<!-- SUBJECTS -->
+<section class="subject-section" id="subjects">
+    <div class="section-heading">
+        <span class="section-tag">SUBJECTS</span>
+        <h2>Study Anything</h2>
+        <p>Pick a subject and your coach will focus on it</p>
+    </div>
+
+    <div class="subjects-wrap">
+        <button class="subject-pill glass" onclick="selectSubject('Math', this)">🔢 Math</button>
+        <button class="subject-pill glass" onclick="selectSubject('Science', this)">🔬 Science</button>
+        <button class="subject-pill glass" onclick="selectSubject('Programming', this)">💻 Programming</button>
+        <button class="subject-pill glass" onclick="selectSubject('History', this)">📖 History</button>
+        <button class="subject-pill glass" onclick="selectSubject('Biology', this)">🧬 Biology</button>
+        <button class="subject-pill glass" onclick="selectSubject('English', this)">📝 English</button>
+        <button class="subject-pill glass" onclick="selectSubject('Chemistry', this)">⚗️ Chemistry</button>
+        <button class="subject-pill glass" onclick="selectSubject('Geography', this)">🌍 Geography</button>
+        <button class="subject-pill glass active" onclick="selectSubject('Any Subject', this)">🎯 Any Subject</button>
+    </div>
+</section>
+
+<!-- AI PANEL -->
+<section class="ai-panel-section" id="app">
+    <div class="ai-panel glass">
 
         <!-- Coach info bar -->
-        <div class="coach-bar">
-            <div class="coach-bar-info">
-                <span class="coach-bar-avatar" id="bar-avatar">👨‍🏫</span>
+        <div class="panel-header">
+            <div class="panel-coach-info">
+                <span id="panel-avatar">👨‍🏫</span>
                 <div>
-                    <div class="coach-bar-name" id="bar-name">Dr. Rohan</div>
-                    <div class="coach-bar-subject" id="bar-subject">Any Subject</div>
+                    <div class="panel-coach-name" id="panel-name">Dr. Rohan</div>
+                    <div class="panel-coach-subject" id="panel-subject">Any Subject</div>
                 </div>
             </div>
-            <button class="change-btn" onclick="goToScreen(2)">Change</button>
-        </div>
-
-        <div class="chat-box" id="chat-box">
-            <div class="message coach">
-                <div class="label">Coach</div>
-                <div class="text" id="welcome-text">Hello! I'm your AI study coach. Hold the mic button and ask me anything! 🎓</div>
+            <div class="panel-actions">
+                <button class="panel-btn" onclick="toggleHistory()">📅 History</button>
+                <button class="panel-btn" onclick="resetSession()">📊 End Session</button>
             </div>
         </div>
 
-        <div id="waveform" style="display:none">
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
+        <!-- Chat -->
+        <div class="chat-box" id="chat-box">
+            <div class="message coach">
+                <div class="label">AI COACH</div>
+                <div class="text" id="welcome-text">
+                    Hello! I'm Dr. Rohan, your AI study coach. Select a subject above and hold the mic button to ask me anything! 🎓
+                </div>
+            </div>
         </div>
 
-        <div id="thinking" style="display:none">
-            <div class="thinking-spinner"></div>
-            <span class="thinking-text">thinking...</span>
+        <!-- Status bar -->
+        <div class="status-bar">
+            <div id="waveform" style="display:none">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+            <div id="thinking" style="display:none">
+                <div class="thinking-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span class="thinking-label">Thinking...</span>
+            </div>
+            <div id="speaking" style="display:none">
+                <div class="speak-bars">
+                    <div class="speak-bar"></div>
+                    <div class="speak-bar"></div>
+                    <div class="speak-bar"></div>
+                    <div class="speak-bar"></div>
+                    <div class="speak-bar"></div>
+                </div>
+                <span class="speaking-label">Speaking...</span>
+            </div>
         </div>
 
-        <div id="speaking" style="display:none">
-            <div class="speak-bar"></div>
-            <div class="speak-bar"></div>
-            <div class="speak-bar"></div>
-            <div class="speak-bar"></div>
-            <div class="speak-bar"></div>
-            <span class="speaking-text">speaking...</span>
-        </div>
-
+        <!-- Mic -->
         <button class="mic-btn" id="mic-btn"
             onmousedown="startRecording()"
             onmouseup="stopRecording()"
             ontouchstart="startRecording()"
             ontouchend="stopRecording()">🎤</button>
 
-        <div class="status" id="status">hold to speak · release to send</div>
-
-        <div class="bottom-btns">
-            <button class="action-btn" onclick="resetSession()">📊 End Session</button>
-            <button class="action-btn" onclick="toggleHistory()">📅 History</button>
-        </div>
+        <div class="status" id="status">Hold to speak · Release to send</div>
 
     </div>
-</div>
+</section>
 
-<!-- Summary Modal -->
+<!-- ANALYTICS -->
+<section class="analytics-section">
+    <div class="section-heading">
+        <span class="section-tag">HOW IT WORKS</span>
+        <h2>Real-time AI Pipeline</h2>
+    </div>
+
+    <div class="analytics-grid">
+        <div class="analytics-card glass">
+            <h3>🎤</h3>
+            <h4>You Speak</h4>
+            <p>Hold mic and ask anything</p>
+        </div>
+        <div class="analytics-card glass">
+            <h3>📝</h3>
+            <h4>Whisper STT</h4>
+            <p>Groq transcribes your voice instantly</p>
+        </div>
+        <div class="analytics-card glass">
+            <h3>🧠</h3>
+            <h4>LLaMA 3.1</h4>
+            <p>AI generates a smart coaching reply</p>
+        </div>
+        <div class="analytics-card glass">
+            <h3>🔊</h3>
+            <h4>Cartesia TTS</h4>
+            <p>Natural voice speaks the response</p>
+        </div>
+    </div>
+</section>
+
+<!-- SUMMARY MODAL -->
 <div id="summary-modal" style="display:none">
-    <div class="modal-box">
-        <h2>Session Summary</h2>
-        <div class="summary-grid">
-            <div class="summary-item">
-                <div class="summary-label">Duration</div>
-                <div class="summary-value" id="sum-duration">—</div>
+    <div class="modal-box glass">
+        <div class="modal-title">📊 Session Summary</div>
+        <div class="summary-row">
+            <div class="summary-stat">
+                <div class="stat-label">Duration</div>
+                <div class="stat-value" id="sum-duration">—</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-label">Questions</div>
-                <div class="summary-value" id="sum-questions">—</div>
+            <div class="summary-stat">
+                <div class="stat-label">Questions</div>
+                <div class="stat-value" id="sum-questions">—</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-label">Subject</div>
-                <div class="summary-value" id="sum-subject">—</div>
+            <div class="summary-stat">
+                <div class="stat-label">Subject</div>
+                <div class="stat-value" id="sum-subject">—</div>
             </div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">✅ Topics Covered</div>
-            <div class="modal-text" id="sum-topics">—</div>
+            <div class="modal-section-label">✅ Topics Covered</div>
+            <div class="modal-section-text" id="sum-topics">—</div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">⚠️ Needs Review</div>
-            <div class="modal-text" id="sum-weak">—</div>
+            <div class="modal-section-label">⚠️ Needs Review</div>
+            <div class="modal-section-text" id="sum-weak">—</div>
         </div>
         <div class="modal-section">
-            <div class="summary-label">💡 Tonight's Tip</div>
-            <div class="modal-text" id="sum-tip">—</div>
+            <div class="modal-section-label">💡 Tonight's Tip</div>
+            <div class="modal-section-text" id="sum-tip">—</div>
         </div>
-        <button class="glow-btn" onclick="confirmReset()">Start New Session →</button>
+        <button class="primary-btn" onclick="confirmReset()" style="width:100%;margin-top:16px">Start New Session →</button>
     </div>
 </div>
 
-<!-- History Modal -->
+<!-- HISTORY MODAL -->
 <div id="history-panel" style="display:none">
-    <div class="modal-box">
+    <div class="modal-box glass">
         <div class="modal-header">
-            <span>Past Sessions</span>
-            <button onclick="toggleHistory()" class="close-btn">✕</button>
+            <span class="modal-title">📅 Past Sessions</span>
+            <button class="btn-close" onclick="toggleHistory()">×</button>
         </div>
         <div id="history-list">
             <p class="no-history">Loading...</p>
@@ -259,6 +280,6 @@
     </div>
 </div>
 
-<script src="/static/script.js?v=12"></script>
+<script src="/static/script.js?v=14"></script>
 </body>
 </html>

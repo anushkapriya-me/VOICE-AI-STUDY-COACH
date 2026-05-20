@@ -1,4 +1,4 @@
-// Animated particles
+// Particles
 (function() {
     const canvas = document.getElementById('particles');
     if (!canvas) return;
@@ -12,18 +12,19 @@
 
     function createParticles() {
         particles = [];
-        const count = Math.floor((canvas.width * canvas.height) / 10000);
+        const count = Math.floor((canvas.width * canvas.height) / 12000);
         for (let i = 0; i < count; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
                 r: Math.random() * 1.2 + 0.2,
-                opacity: Math.random() * 0.5 + 0.1,
-                speed: Math.random() * 0.12 + 0.02,
-                drift: (Math.random() - 0.5) * 0.06,
+                opacity: Math.random() * 0.4 + 0.05,
+                speed: Math.random() * 0.1 + 0.01,
+                drift: (Math.random() - 0.5) * 0.05,
                 twinkle: Math.random() * Math.PI * 2,
-                twinkleSpeed: Math.random() * 0.015 + 0.004,
-                gold: Math.random() < 0.06
+                twinkleSpeed: Math.random() * 0.01 + 0.003,
+                gold: Math.random() < 0.08,
+                purple: Math.random() < 0.06
             });
         }
     }
@@ -36,8 +37,10 @@
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             ctx.fillStyle = p.gold
-                ? `rgba(212, 175, 100, ${opacity})`
-                : `rgba(255, 255, 255, ${opacity})`;
+                ? `rgba(212,175,100,${opacity})`
+                : p.purple
+                ? `rgba(139,92,246,${opacity})`
+                : `rgba(255,255,255,${opacity})`;
             ctx.fill();
             p.y -= p.speed;
             p.x += p.drift;
@@ -66,46 +69,32 @@ let isProcessing = false;
 let shouldSend = false;
 let recordingStartTime = 0;
 
-// Coach data
-const coaches = {
-    "1259b7e3-cb8a-43df-9446-30971a46b8b0": { name: "Dr. Rohan", avatar: "👨‍🏫" },
-    "7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8": { name: "Prof. Priya", avatar: "👩‍🏫" },
-    "c1c65fc2-528a-4dde-a2c4-f822785c2704": { name: "Coach James", avatar: "🧑‍💼" },
-    "607167f6-9bf2-473c-accc-ac7b3b66b30b": { name: "Dr. Olivia", avatar: "👩‍💻" }
-};
-
-
-// Screen navigation
-function goToScreen(num) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(`screen-${num}`).classList.add('active');
-    window.scrollTo(0, 0);
-}
-
 // Select coach
-function selectCoach(voiceId, name, el) {
+function selectCoach(voiceId, name, avatar, el) {
     selectedVoice = voiceId;
     selectedCoachName = name;
-    selectedCoachAvatar = coaches[voiceId].avatar;
+    selectedCoachAvatar = avatar;
     document.querySelectorAll('.coach-card').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
+
+    // Update panel
+    document.getElementById('panel-name').innerText = name;
+    document.getElementById('panel-avatar').innerText = avatar;
+    document.getElementById('welcome-text').innerText =
+        `Hello! I'm ${name}, your AI study coach. Ask me anything! 🎓`;
 }
 
 // Select subject
-function selectSubjectOnboard(subject, el) {
+function selectSubject(subject, el) {
     selectedSubject = subject;
-    document.querySelectorAll('.subject-card').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.subject-pill').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
+    document.getElementById('panel-subject').innerText = subject;
 }
 
-// Start session
-function startSession() {
-    document.getElementById('bar-name').innerText = selectedCoachName;
-    document.getElementById('bar-avatar').innerText = selectedCoachAvatar;
-    document.getElementById('bar-subject').innerText = selectedSubject;
-    document.getElementById('welcome-text').innerText =
-        `Hello! I'm ${selectedCoachName}, your AI study coach. We'll be focusing on ${selectedSubject} today. Hold the mic button and ask me anything! 🎓`;
-    goToScreen(4);
+// Scroll to app
+function scrollToApp() {
+    document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
 }
 
 // Recording
@@ -114,6 +103,22 @@ async function startRecording() {
 
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+        // Web Audio API for voice detection
+        const audioContext = new AudioContext();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        let volumeInterval = setInterval(() => {
+            analyser.getByteFrequencyData(dataArray);
+            const volume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+            const waveform = document.getElementById("waveform");
+            if (waveform) waveform.style.display = volume > 10 ? "flex" : "none";
+        }, 100);
+
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
         shouldSend = false;
@@ -123,6 +128,10 @@ async function startRecording() {
         };
 
         mediaRecorder.onstop = () => {
+            clearInterval(volumeInterval);
+            audioContext.close();
+            const waveform = document.getElementById("waveform");
+            if (waveform) waveform.style.display = "none";
             if (shouldSend) sendAudio();
             else resetUI();
         };
@@ -133,10 +142,8 @@ async function startRecording() {
         recordingStartTime = Date.now();
 
         document.getElementById("mic-btn").classList.add("recording");
-        document.getElementById("status").innerText = "Recording... release to send!";
-
-        // Show animated waveform on mic
-
+        document.getElementById("mic-btn").innerText = "⏹";
+        document.getElementById("status").innerText = "Listening... release to send";
 
     } catch (err) {
         console.error("Mic error:", err);
@@ -147,34 +154,24 @@ async function startRecording() {
 function stopRecording() {
     if (!isRecording || !mediaRecorder) return;
 
-    const recordingDuration = Date.now() - recordingStartTime;
+    const duration = Date.now() - recordingStartTime;
 
-    // Stop mic animation
-
-    // Minimum 1.5 seconds required
-    if (recordingDuration < 1500) {
+    // Minimum 1.5s
+    if (duration < 1500) {
         isRecording = false;
         shouldSend = false;
         try {
             mediaRecorder.stop();
-            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            mediaRecorder.stream.getTracks().forEach(t => t.stop());
         } catch(e) {}
         mediaRecorder = null;
         audioChunks = [];
-
         document.getElementById("mic-btn").classList.remove("recording");
         document.getElementById("mic-btn").innerText = "🎤";
-
-    
-
-        const status = document.getElementById("status");
-        if (status) {
-            status.style.display = "block";
-            status.innerText = "Hold longer to speak! (min 1.5 sec)";
-            setTimeout(() => {
-                status.innerText = "hold to speak · release to send";
-            }, 2000);
-        }
+        document.getElementById("status").innerText = "Hold longer to speak!";
+        setTimeout(() => {
+            document.getElementById("status").innerText = "Hold to speak · Release to send";
+        }, 2000);
         return;
     }
 
@@ -183,16 +180,13 @@ function stopRecording() {
 
     try {
         mediaRecorder.stop();
-        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        mediaRecorder.stream.getTracks().forEach(t => t.stop());
     } catch (err) {
         resetUI();
         return;
     }
 
     mediaRecorder = null;
-
-    const waveform = document.getElementById("waveform");
-    if (waveform) waveform.style.display = "none";
 
     document.getElementById("mic-btn").classList.remove("recording");
     document.getElementById("mic-btn").classList.add("loading");
@@ -201,8 +195,7 @@ function stopRecording() {
     const thinking = document.getElementById("thinking");
     if (thinking) thinking.style.display = "flex";
 
-    const status = document.getElementById("status");
-    if (status) status.style.display = "none";
+    document.getElementById("status").style.display = "none";
 }
 
 async function sendAudio() {
@@ -211,13 +204,8 @@ async function sendAudio() {
     try {
         if (audioChunks.length === 0) { isProcessing = false; resetUI(); return; }
 
-        const totalSize = audioChunks.reduce((acc, chunk) => acc + chunk.size, 0);
-        if (totalSize < 1000) {
-            isProcessing = false;
-            document.getElementById("status").innerText = "Too short! Try again.";
-            resetUI();
-            return;
-        }
+        const totalSize = audioChunks.reduce((acc, c) => acc + c.size, 0);
+        if (totalSize < 1000) { isProcessing = false; resetUI(); return; }
 
         const audioBlob = new Blob(audioChunks, { type: "audio/webm;codecs=opus" });
         const formData = new FormData();
@@ -240,8 +228,7 @@ async function sendAudio() {
         const speaking = document.getElementById("speaking");
         if (speaking) speaking.style.display = "flex";
 
-        const status = document.getElementById("status");
-        if (status) status.style.display = "none";
+        document.getElementById("status").style.display = "none";
 
         if (data.audio_b64) await playAudio(data.audio_b64);
 
@@ -272,7 +259,6 @@ function playAudio(audioB64) {
             audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
             audio.play().catch(() => resolve());
         } catch (err) {
-            console.error("Audio error:", err);
             resolve();
         }
     });
@@ -281,19 +267,16 @@ function playAudio(audioB64) {
 function resetUI() {
     if (isProcessing) return;
 
-    const micBtn = document.getElementById("mic-btn");
-    micBtn.classList.remove("loading", "recording");
-    micBtn.innerText = "🎤";
+    document.getElementById("mic-btn").classList.remove("loading", "recording");
+    document.getElementById("mic-btn").innerText = "🎤";
 
-    // Restore flat waveform on mic
-   
     const status = document.getElementById("status");
     if (status) {
         status.style.display = "block";
-        status.innerText = "hold to speak · release to send";
+        status.innerText = "Hold to speak · Release to send";
     }
 
-    ["thinking", "speaking"].forEach(id => {
+    ["thinking", "speaking", "waveform"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
@@ -312,6 +295,9 @@ function addMessage(role, text) {
     `;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Scroll to app section
+    document.getElementById('app').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function resetSession() {
@@ -348,7 +334,6 @@ async function confirmReset() {
         </div>
     `;
     resetUI();
-    goToScreen(2);
 }
 
 async function toggleHistory() {
