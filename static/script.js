@@ -69,6 +69,27 @@ let isProcessing = false;
 let shouldSend = false;
 let recordingStartTime = 0;
 
+// Select new coach (for new coach cards)
+function selectNewCoach(voiceId, name, avatar, el) {
+    selectedVoice = voiceId;
+    selectedCoachName = name;
+    selectedCoachAvatar = avatar;
+
+    // Remove selected from all new coach cards
+    document.querySelectorAll('.new-coach-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+
+    // Update panel
+    document.getElementById('panel-name').innerText = name;
+    document.getElementById('panel-avatar').innerText = avatar;
+    document.getElementById('welcome-text').innerText =
+        `Hello! I'm ${name}, your AI study coach. Ask me anything! 🎓`;
+
+    // Scroll to app
+    setTimeout(() => {
+        document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+}
 // Select coach
 function selectCoach(voiceId, name, avatar, el) {
     selectedVoice = voiceId;

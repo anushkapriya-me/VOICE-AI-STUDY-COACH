@@ -8,24 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
-    <!-- FAVICONS -->
-
-<link rel="icon" type="image/x-icon"
-href="{{ url_for('static', filename='assets/favicon_io/favicon.ico') }}">
-
-<link rel="apple-touch-icon"
-href="{{ url_for('static', filename='assets/favicon_io/apple-touch-icon.png') }}">
-
-<link rel="icon" type="image/png" sizes="32x32"
-href="{{ url_for('static', filename='assets/favicon_io/favicon-32x32.png') }}">
-
-<link rel="icon" type="image/png" sizes="16x16"
-href="{{ url_for('static', filename='assets/favicon_io/favicon-16x16.png') }}">
-
-<link rel="manifest"
-href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
-
-<meta name="theme-color" content="#050505">
 </head>
 <body>
 
@@ -42,6 +24,7 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
         <a href="#subjects">Subjects</a>
         <a href="#app">Start Learning</a>
     </div>
+    <button class="primary-btn" onclick="scrollToApp()" style="padding:10px 20px;font-size:14px;">Try Now →</button>
 </nav>
 
 <!-- HERO -->
@@ -65,10 +48,7 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
 
         <div class="hero-buttons">
             <button class="primary-btn" onclick="scrollToApp()">Start Learning →</button>
-            <a href="https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH" target="_blank">
-                <button class="secondary-btn">GitHub ↗</button>
-            </a>
-        </div>
+                    </div>
 
         <div class="hero-stats">
             <div class="stat-card glass">
@@ -76,7 +56,7 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
                 <p>AI Coaches</p>
             </div>
             <div class="stat-card glass">
-                <h3>9</h3>
+                <h3>All</h3>
                 <p>Subjects</p>
             </div>
             <div class="stat-card glass">
@@ -97,37 +77,128 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
 
 <!-- COACHES -->
 <section class="coach-section" id="coaches">
-    <div class="section-heading">
-        <span class="section-tag">AI COACHES</span>
-        <h2>Choose Your Coach</h2>
+
+    <div class="coach-header">
+        <div class="coach-badge">✨ AI COACHES</div>
+        <h2>Choose Your <span>Coach</span></h2>
         <p>Different teaching styles for different learners</p>
     </div>
 
-    <div class="coach-grid">
-        <div class="coach-card glass" onclick="selectCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', '👨‍🏫', this)">
-            <div class="coach-avatar">👨‍🏫</div>
+    <div class="new-coach-grid">
+
+        <!-- CARD 1 -->
+        <div class="new-coach-card gold-card"
+            onclick="selectNewCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', this)">
+
+            <div class="top-icon">⭐</div>
+
+            <div class="avatar-wrap gold-glow">
+                <img src="/static/assets/coach1.png" alt="Dr. Rohan">            
+            </div>
+
             <h3>Dr. Rohan</h3>
-            <p>🇮🇳 Calm & Analytical</p>
-            <div class="coach-selected">✓ Selected</div>
+
+            <div class="coach-tag gold-tag">Calm & Analytical</div>
+
+            <p class="coach-desc">
+                Patient, methodical, and detail-oriented.
+                Perfect for deep understanding.
+            </p>
+
+            <div class="skill-row">
+                <div class="skill-pill">🧠 Deep Focus</div>
+                <div class="skill-pill">📈 Step-by-Step</div>
+                <div class="skill-pill">✅ Concept Clarity</div>
+            </div>
+
+            <div class="card-selected-badge">✓ Selected</div>
         </div>
-        <div class="coach-card glass" onclick="selectCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', '👩‍🏫', this)">
-            <div class="coach-avatar">👩‍🏫</div>
+
+        <!-- CARD 2 -->
+        <div class="new-coach-card purple-card"
+            onclick="selectNewCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', this)">
+
+            <div class="top-icon">💜</div>
+
+            <div class="avatar-wrap purple-glow">
+                <img src="/static/assets/coach2.png" alt="Prof. Priya">
+            </div>
+
             <h3>Prof. Priya</h3>
-            <p>🇮🇳 Warm & Encouraging</p>
-            <div class="coach-selected">✓ Selected</div>
+
+            <div class="coach-tag purple-tag">Warm & Encouraging</div>
+
+            <p class="coach-desc">
+                Friendly, supportive, and motivating.
+                Great for building confidence.
+            </p>
+
+            <div class="skill-row">
+                <div class="skill-pill">💜 Encouraging</div>
+                <div class="skill-pill">⭐ Confidence</div>
+                <div class="skill-pill">😊 Positive Vibes</div>
+            </div>
+
+            <div class="card-selected-badge">✓ Selected</div>
         </div>
-        <div class="coach-card glass" onclick="selectCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James', '🧑‍💼', this)">
-            <div class="coach-avatar">🧑‍💼</div>
+
+        <!-- CARD 3 -->
+        <div class="new-coach-card active-card"
+            onclick="selectNewCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James',  this)">
+
+            <div class="popular-badge">🔥 MOST POPULAR</div>
+            <div class="top-icon">⚡</div>
+
+            <div class="avatar-wrap active-glow">
+                <img src="/static/assets/coach3.png" alt="Coach James">
+            </div>
+
             <h3>Coach James</h3>
-            <p>🇺🇸 Energetic & Motivating</p>
-            <div class="coach-selected">✓ Selected</div>
+
+            <div class="coach-tag active-tag">Energetic & Motivating</div>
+
+            <p class="coach-desc">
+                High energy, action-oriented, and inspiring.
+                Best for staying consistent.
+            </p>
+
+            <div class="skill-row">
+                <div class="skill-pill">⚡ High Energy</div>
+                <div class="skill-pill">🎯 Goal Focused</div>
+                <div class="skill-pill">🏆 Motivation</div>
+            </div>
+
+            <div class="card-selected-badge">✓ Selected</div>
         </div>
-        <div class="coach-card glass" onclick="selectCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia', '👩‍💻', this)">
-            <div class="coach-avatar">👩‍💻</div>
+
+        <!-- CARD 4 -->
+        <div class="new-coach-card blue-card"
+            onclick="selectNewCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia',  this)">
+
+            <div class="top-icon">💎</div>
+
+            <div class="avatar-wrap blue-glow">
+                <img src="/static/assets/coach4.png" alt="Dr. Olivia">
+            </div>
+
             <h3>Dr. Olivia</h3>
-            <p>🇺🇸 Clear & Precise</p>
-            <div class="coach-selected">✓ Selected</div>
+
+            <div class="coach-tag blue-tag">Clear & Precise</div>
+
+            <p class="coach-desc">
+                Concise, structured, and to the point.
+                Ideal for quick & clear learning.
+            </p>
+
+            <div class="skill-row">
+                <div class="skill-pill">🎯 Clarity</div>
+                <div class="skill-pill">📚 Structured</div>
+                <div class="skill-pill">✅ No Fluff</div>
+            </div>
+
+            <div class="card-selected-badge">✓ Selected</div>
         </div>
+
     </div>
 </section>
 
@@ -156,10 +227,9 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
 <section class="ai-panel-section" id="app">
     <div class="ai-panel glass">
 
-        <!-- Coach info bar -->
         <div class="panel-header">
             <div class="panel-coach-info">
-                <span id="panel-avatar">👨‍🏫</span>
+                <span id="panel-avatar" style="font-size:1.8rem">👨‍🏫</span>
                 <div>
                     <div class="panel-coach-name" id="panel-name">Dr. Rohan</div>
                     <div class="panel-coach-subject" id="panel-subject">Any Subject</div>
@@ -171,7 +241,6 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
             </div>
         </div>
 
-        <!-- Chat -->
         <div class="chat-box" id="chat-box">
             <div class="message coach">
                 <div class="label">AI COACH</div>
@@ -181,7 +250,6 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
             </div>
         </div>
 
-        <!-- Status bar -->
         <div class="status-bar">
             <div id="waveform" style="display:none">
                 <div class="wave-bar"></div>
@@ -208,7 +276,6 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
             </div>
         </div>
 
-        <!-- Mic -->
         <button class="mic-btn" id="mic-btn"
             onmousedown="startRecording()"
             onmouseup="stopRecording()"
@@ -220,18 +287,19 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
     </div>
 </section>
 
-<!-- ANALYTICS -->
+<!-- HOW IT WORKS -->
 <section class="analytics-section">
     <div class="section-heading">
         <span class="section-tag">HOW IT WORKS</span>
         <h2>Real-time AI Pipeline</h2>
+        <p>4 AI systems working together in under 3 seconds</p>
     </div>
 
     <div class="analytics-grid">
         <div class="analytics-card glass">
             <h3>🎤</h3>
             <h4>You Speak</h4>
-            <p>Hold mic and ask anything</p>
+            <p>Hold mic and ask anything naturally</p>
         </div>
         <div class="analytics-card glass">
             <h3>📝</h3>
@@ -246,10 +314,24 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
         <div class="analytics-card glass">
             <h3>🔊</h3>
             <h4>Cartesia TTS</h4>
-            <p>Natural voice speaks the response</p>
+            <p>Natural voice speaks the response back</p>
         </div>
     </div>
 </section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            <h3>🎓 Voice AI Study Coach</h3>
+            <p>Built with ❤️ by Anushka Priya </p>
+        </div>
+        <div class="footer-links">
+            <a href="https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH" target="_blank">GitHub ↗</a>
+            <a href="https://huggingface.co/spaces/AnushkaPriya/voice-coach" target="_blank">Hugging Faces ↗</a>
+        </div>
+    </div>
+</footer>
 
 <!-- SUMMARY MODAL -->
 <div id="summary-modal" style="display:none">
@@ -298,6 +380,6 @@ href="{{ url_for('static', filename='assets/favicon_io/site.webmanifest') }}">
     </div>
 </div>
 
-<script src="/static/script.js?v=14"></script>
+<script src="/static/script.js?v=15"></script>
 </body>
 </html>
