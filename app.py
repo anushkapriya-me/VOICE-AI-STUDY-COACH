@@ -117,6 +117,9 @@ def past_sessions():
 def chat():
     global conversation_history, session_subject, question_count
 
+    if "audio" not in request.files:
+        return jsonify({"error": "No audio file received"}), 400
+
     audio_file = request.files["audio"]
     audio_bytes = audio_file.read()
     selected_subject = request.form.get("subject", "Any Subject")
@@ -130,7 +133,7 @@ def chat():
     # Transcribe directly from memory
     try:
         audio_buffer = io.BytesIO(audio_bytes)
-        audio_buffer.name = "audio.mp4"
+        audio_buffer.name = audio_file.filename or "voice-note.webm"
         transcription = groq_client.audio.transcriptions.create(
             model="whisper-large-v3-turbo",
             file=audio_buffer,

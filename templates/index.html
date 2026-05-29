@@ -1,385 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Voice AI Study Coach</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoiceCoach AI | Real-Time Voice Study Coach</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/assets/favicon_io/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/assets/favicon_io/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/favicon_io/favicon-16x16.png" />
+  <link rel="shortcut icon" href="/static/assets/favicon_io/favicon.ico" />
+  <link rel="manifest" href="/static/assets/favicon_io/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
+
 <body>
+  <canvas id="particles"></canvas>
 
-<canvas id="particles"></canvas>
+  <nav id="navbar" class="navbar">
+    <a class="nav-brand" href="#hero">
+      <span class="brand-mark">VC</span>
+      <span>VoiceCoach AI</span>
+    </a>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="logo-area">
-        <div class="logo-dot"></div>
-        <span>Voice AI Study Coach</span>
-    </div>
+    <button class="nav-toggle" type="button" aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </button>
+
     <div class="nav-links">
-        <a href="#coaches">Coaches</a>
-        <a href="#subjects">Subjects</a>
-        <a href="#app">Start Learning</a>
+      <a href="#hero">Home</a>
+      <a href="#features">Features</a>
+      <a href="#coaches">Coaches</a>
+      <a href="#app" class="nav-action">Launch Demo</a>
     </div>
-    <button class="primary-btn" onclick="scrollToApp()" style="padding:10px 20px;font-size:14px;">Try Now →</button>
-</nav>
+  </nav>
 
-<!-- HERO -->
-<section class="hero-section">
-    <div class="hero-left">
-        <div class="top-badge">
-            <span class="live-dot"></span>
-            AI POWERED LEARNING
-        </div>
-
-        <h1>
-            Your AI Tutor<br>
-            That <span class="gradient-text">Listens, Understands</span><br>
-            & Teaches
-        </h1>
-
+  <main>
+    <header id="hero" class="hero-section">
+      <section class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> Real-time AI voice tutor</div>
+        <h1>Talk to your study coach like a real mentor.</h1>
         <p class="hero-subtitle">
-            Speak naturally. Learn deeply. Your intelligent AI voice coach
-            helps you study smarter with real-time conversations.
+          VoiceCoach AI turns spoken questions into clear explanations, active recall prompts,
+          revision plans, and voice replies powered by your AI backend.
         </p>
 
-        <div class="hero-buttons">
-            <button class="primary-btn" onclick="scrollToApp()">Start Learning →</button>
-                    </div>
-
-        <div class="hero-stats">
-            <div class="stat-card glass">
-                <h3>4</h3>
-                <p>AI Coaches</p>
-            </div>
-            <div class="stat-card glass">
-                <h3>All</h3>
-                <p>Subjects</p>
-            </div>
-            <div class="stat-card glass">
-                <h3>24/7</h3>
-                <p>Available</p>
-            </div>
+        <div class="hero-actions">
+          <button id="start-session-btn" class="btn btn-primary" type="button">Start Voice Session</button>
+          <a class="btn btn-secondary" href="#features">Explore Features</a>
         </div>
+
+        <div class="hero-metrics">
+          <div><strong>Voice</strong><span>Ask naturally</span></div>
+          <div><strong>4</strong><span>Coach modes</span></div>
+          <div><strong>AI</strong><span>Live replies</span></div>
+        </div>
+      </section>
+
+      <section class="voice-hero">
+        <div class="voice-panel">
+          <div class="voice-panel-top">
+            <div>
+              <span class="panel-label">Live voice coach</span>
+              <h2>Active Session</h2>
+            </div>
+            <span class="session-pill">Ready</span>
+          </div>
+
+          <div class="coach-orbit">
+            <div class="sound-wave wave-one"></div>
+            <div class="sound-wave wave-two"></div>
+            <div class="sound-wave wave-three"></div>
+          <div class="coach-orbit">
+            <img src="/static/assets/favicon_io/apple-touch-icon.png" alt="VoiceCoach AI logo" class="hero-logo-img" />
+          </div>
+          </div>
+
+          </div>
+          </div>
+          <div class="voice-transcript">
+            <div class="transcript-row user">
+              <span>You</span>
+              <p>Explain dynamic programming using a simple example.</p>
+            </div>
+            <div class="transcript-row coach">
+              <span>Coach</span>
+              <p>Start with repeated subproblems. Solve once, store it, then reuse it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <section class="logo-strip">
+      <span>Speech to text</span>
+      <span>AI reasoning</span>
+      <span>Voice response</span>
+      <span>Coach personas</span>
+      <span>Session tracking</span>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-heading">
+        <span class="section-kicker">Product depth</span>
+        <h2>Built like a complete learning assistant.</h2>
+        <p>A polished voice-first study coach with real AI flow, coach selection, analytics, and a resume-ready interface.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card accent-teal">
+          <span class="feature-icon">STT</span>
+          <h3>Voice-first questions</h3>
+          <p>Click the mic, speak naturally, then click again to send real audio to your Flask backend.</p>
+        </article>
+        <article class="feature-card accent-amber">
+          <span class="feature-icon">AI</span>
+          <h3>Smart explanations</h3>
+          <p>Groq handles transcription and reasoning, then returns a clear study-coach answer.</p>
+        </article>
+        <article class="feature-card accent-coral">
+          <span class="feature-icon">TTS</span>
+          <h3>Spoken replies</h3>
+          <p>Cartesia voice audio plays back directly inside the browser.</p>
+        </article>
+        <article class="feature-card accent-blue">
+          <span class="feature-icon">UX</span>
+          <h3>Portfolio polish</h3>
+          <p>Coach cards, clean dashboard layout, responsive design, and premium visuals.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="coaches" class="section split-section">
+      <div class="section-heading align-left">
+        <span class="section-kicker">Coach library</span>
+        <h2>Choose the teaching personality.</h2>
+        <p>Each coach uses your existing image assets and a matching voice id for the backend request.</p>
+      </div>
+
+      <div class="coach-gallery">
+        <article class="profile-card active" data-coach-card data-name="Dr. Rohan" data-role="Concept Builder" data-voice="1259b7e3-cb8a-43df-9446-30971a46b8b0" data-image="/static/assets/coach1.png">
+          <img src="/static/assets/coach1.png" alt="Dr. Rohan" />
+          <div><h3>Dr. Rohan</h3><p>Step-by-step concept explanations.</p></div>
+        </article>
+
+        <article class="profile-card" data-coach-card data-name="Sarah" data-role="Motivation Mentor" data-voice="7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8" data-image="/static/assets/coach2.png">
+          <img src="/static/assets/coach2.png" alt="Sarah" />
+          <div><h3>Sarah</h3><p>Calm, encouraging study support.</p></div>
+        </article>
+
+        <article class="profile-card" data-coach-card data-name="Aarav" data-role="Exam Strategist" data-voice="c1c65fc2-528a-4dde-a2c4-f822785c2704" data-image="/static/assets/coach3.png">
+          <img src="/static/assets/coach3.png" alt="Aarav" />
+          <div><h3>Aarav</h3><p>Revision, exams, and high-yield practice.</p></div>
+        </article>
+
+        <article class="profile-card" data-coach-card data-name="Maya" data-role="Interview Coach" data-voice="607167f6-9bf2-473c-accc-ac7b3b66b30b" data-image="/static/assets/coach4.png">
+          <img src="/static/assets/coach4.png" alt="Maya" />
+          <div><h3>Maya</h3><p>Mock interviews and practical questions.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="app" class="app-section">
+      <div class="app-shell">
+        <aside class="app-sidebar">
+          <div class="sidebar-header">
+            <span class="section-kicker">Workspace</span>
+            <h2>Voice Session</h2>
+            <p>Choose a coach, click the mic, speak your question, then click again to let your AI backend respond.</p>
+          </div>
+
+          <div class="sidebar-block">
+            <div class="block-title">
+              <span>Coach</span>
+              <small id="active-role-small">Concept Builder</small>
+            </div>
+
+            <div class="mini-coach-list">
+              <button class="mini-coach active" type="button" data-coach-button data-name="Dr. Rohan" data-role="Concept Builder" data-voice="1259b7e3-cb8a-43df-9446-30971a46b8b0" data-image="/static/assets/coach1.png">
+                <img src="/static/assets/coach1.png" alt="" /><span>Dr. Rohan</span>
+              </button>
+
+              <button class="mini-coach" type="button" data-coach-button data-name="Sarah" data-role="Motivation Mentor" data-voice="7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8" data-image="/static/assets/coach2.png">
+                <img src="/static/assets/coach2.png" alt="" /><span>Sarah</span>
+              </button>
+
+              <button class="mini-coach" type="button" data-coach-button data-name="Aarav" data-role="Exam Strategist" data-voice="c1c65fc2-528a-4dde-a2c4-f822785c2704" data-image="/static/assets/coach3.png">
+                <img src="/static/assets/coach3.png" alt="" /><span>Aarav</span>
+              </button>
+
+              <button class="mini-coach" type="button" data-coach-button data-name="Maya" data-role="Interview Coach" data-voice="607167f6-9bf2-473c-accc-ac7b3b66b30b" data-image="/static/assets/coach4.png">
+                <img src="/static/assets/coach4.png" alt="" /><span>Maya</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="sidebar-block">
+            <div class="block-title"><span>Session metrics</span><small>Live</small></div>
+            <div class="metric-list">
+              <div><span>Time</span><strong id="timer">00:00</strong></div>
+              <div><span>Questions</span><strong id="question-count">0</strong></div>
+              <div><span>Status</span><strong>Online</strong></div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="chat-area">
+          <header class="chat-header">
+            <div class="active-coach">
+              <img id="active-coach-img" src="/static/assets/coach1.png" alt="Active coach" />
+              <div>
+                <span id="active-role">Concept Builder</span>
+                <h2 id="active-coach">Dr. Rohan</h2>
+              </div>
+            </div>
+            <div id="status-indicator" class="status-badge ready">Ready</div>
+          </header>
+
+          <div class="study-plan">
+            <div><span>Active coach</span><strong id="active-coach-plan">Dr. Rohan</strong></div>
+            <div><span>Mode</span><strong>Live AI voice</strong></div>
+            <div><span>Next action</span><strong>Click the mic</strong></div>
+          </div>
+
+          <div id="chat-window" class="chat-window">
+            <div class="message coach-message">
+              <img src="/static/assets/coach1.png" alt="" />
+              <div class="message-bubble">
+                <span>Dr. Rohan</span>
+                <p>Hi, I am ready. Click the mic and ask me anything. I can explain, quiz you, or make a revision plan.</p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="voice-controls">
+            <p id="control-hint">Click the mic to start recording.</p>
+            <button id="mic-btn" class="mic-button" type="button" aria-label="Start or stop recording">
+              <span class="mic-icon"></span>
+            </button>
+          </footer>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>VoiceCoach AI</strong>
+      <p>Built with ❤️ by Anushka Priya.</p>
     </div>
 
-    <div class="hero-right">
-        <div class="ai-orb">
-            <div class="orb-ring ring1"></div>
-            <div class="orb-ring ring2"></div>
-            <div class="orb-core">🎓</div>
-        </div>
+    <div class="footer-links">
+      <a href="https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH" target="_blank" rel="noreferrer">GitHub Repository</a>
+      <a href="#hero">Back to top</a>
     </div>
-</section>
+  </footer>
 
-<!-- COACHES -->
-<section class="coach-section" id="coaches">
-
-    <div class="coach-header">
-        <div class="coach-badge">✨ AI COACHES</div>
-        <h2>Choose Your <span>Coach</span></h2>
-        <p>Different teaching styles for different learners</p>
-    </div>
-
-    <div class="new-coach-grid">
-
-        <!-- CARD 1 -->
-        <div class="new-coach-card gold-card"
-            onclick="selectNewCoach('1259b7e3-cb8a-43df-9446-30971a46b8b0', 'Dr. Rohan', this)">
-
-            <div class="top-icon">⭐</div>
-
-            <div class="avatar-wrap gold-glow">
-                <img src="/static/assets/coach1.png" alt="Dr. Rohan">            
-            </div>
-
-            <h3>Dr. Rohan</h3>
-
-            <div class="coach-tag gold-tag">Calm & Analytical</div>
-
-            <p class="coach-desc">
-                Patient, methodical, and detail-oriented.
-                Perfect for deep understanding.
-            </p>
-
-            <div class="skill-row">
-                <div class="skill-pill">🧠 Deep Focus</div>
-                <div class="skill-pill">📈 Step-by-Step</div>
-                <div class="skill-pill">✅ Concept Clarity</div>
-            </div>
-
-            <div class="card-selected-badge">✓ Selected</div>
-        </div>
-
-        <!-- CARD 2 -->
-        <div class="new-coach-card purple-card"
-            onclick="selectNewCoach('7ea5e9c2-b719-4dc3-b870-5ba5f14d31d8', 'Prof. Priya', this)">
-
-            <div class="top-icon">💜</div>
-
-            <div class="avatar-wrap purple-glow">
-                <img src="/static/assets/coach2.png" alt="Prof. Priya">
-            </div>
-
-            <h3>Prof. Priya</h3>
-
-            <div class="coach-tag purple-tag">Warm & Encouraging</div>
-
-            <p class="coach-desc">
-                Friendly, supportive, and motivating.
-                Great for building confidence.
-            </p>
-
-            <div class="skill-row">
-                <div class="skill-pill">💜 Encouraging</div>
-                <div class="skill-pill">⭐ Confidence</div>
-                <div class="skill-pill">😊 Positive Vibes</div>
-            </div>
-
-            <div class="card-selected-badge">✓ Selected</div>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="new-coach-card active-card"
-            onclick="selectNewCoach('c1c65fc2-528a-4dde-a2c4-f822785c2704', 'Coach James',  this)">
-
-            <div class="popular-badge">🔥 MOST POPULAR</div>
-            <div class="top-icon">⚡</div>
-
-            <div class="avatar-wrap active-glow">
-                <img src="/static/assets/coach3.png" alt="Coach James">
-            </div>
-
-            <h3>Coach James</h3>
-
-            <div class="coach-tag active-tag">Energetic & Motivating</div>
-
-            <p class="coach-desc">
-                High energy, action-oriented, and inspiring.
-                Best for staying consistent.
-            </p>
-
-            <div class="skill-row">
-                <div class="skill-pill">⚡ High Energy</div>
-                <div class="skill-pill">🎯 Goal Focused</div>
-                <div class="skill-pill">🏆 Motivation</div>
-            </div>
-
-            <div class="card-selected-badge">✓ Selected</div>
-        </div>
-
-        <!-- CARD 4 -->
-        <div class="new-coach-card blue-card"
-            onclick="selectNewCoach('607167f6-9bf2-473c-accc-ac7b3b66b30b', 'Dr. Olivia',  this)">
-
-            <div class="top-icon">💎</div>
-
-            <div class="avatar-wrap blue-glow">
-                <img src="/static/assets/coach4.png" alt="Dr. Olivia">
-            </div>
-
-            <h3>Dr. Olivia</h3>
-
-            <div class="coach-tag blue-tag">Clear & Precise</div>
-
-            <p class="coach-desc">
-                Concise, structured, and to the point.
-                Ideal for quick & clear learning.
-            </p>
-
-            <div class="skill-row">
-                <div class="skill-pill">🎯 Clarity</div>
-                <div class="skill-pill">📚 Structured</div>
-                <div class="skill-pill">✅ No Fluff</div>
-            </div>
-
-            <div class="card-selected-badge">✓ Selected</div>
-        </div>
-
-    </div>
-</section>
-
-<!-- SUBJECTS -->
-<section class="subject-section" id="subjects">
-    <div class="section-heading">
-        <span class="section-tag">SUBJECTS</span>
-        <h2>Study Anything</h2>
-        <p>Pick a subject and your coach will focus on it</p>
-    </div>
-
-    <div class="subjects-wrap">
-        <button class="subject-pill glass" onclick="selectSubject('Math', this)">🔢 Math</button>
-        <button class="subject-pill glass" onclick="selectSubject('Science', this)">🔬 Science</button>
-        <button class="subject-pill glass" onclick="selectSubject('Programming', this)">💻 Programming</button>
-        <button class="subject-pill glass" onclick="selectSubject('History', this)">📖 History</button>
-        <button class="subject-pill glass" onclick="selectSubject('Biology', this)">🧬 Biology</button>
-        <button class="subject-pill glass" onclick="selectSubject('English', this)">📝 English</button>
-        <button class="subject-pill glass" onclick="selectSubject('Chemistry', this)">⚗️ Chemistry</button>
-        <button class="subject-pill glass" onclick="selectSubject('Geography', this)">🌍 Geography</button>
-        <button class="subject-pill glass active" onclick="selectSubject('Any Subject', this)">🎯 Any Subject</button>
-    </div>
-</section>
-
-<!-- AI PANEL -->
-<section class="ai-panel-section" id="app">
-    <div class="ai-panel glass">
-
-        <div class="panel-header">
-            <div class="panel-coach-info">
-                <span id="panel-avatar" style="font-size:1.8rem">👨‍🏫</span>
-                <div>
-                    <div class="panel-coach-name" id="panel-name">Dr. Rohan</div>
-                    <div class="panel-coach-subject" id="panel-subject">Any Subject</div>
-                </div>
-            </div>
-            <div class="panel-actions">
-                <button class="panel-btn" onclick="toggleHistory()">📅 History</button>
-                <button class="panel-btn" onclick="resetSession()">📊 End Session</button>
-            </div>
-        </div>
-
-        <div class="chat-box" id="chat-box">
-            <div class="message coach">
-                <div class="label">AI COACH</div>
-                <div class="text" id="welcome-text">
-                    Hello! I'm Dr. Rohan, your AI study coach. Select a subject above and hold the mic button to ask me anything! 🎓
-                </div>
-            </div>
-        </div>
-
-        <div class="status-bar">
-            <div id="waveform" style="display:none">
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-            </div>
-            <div id="thinking" style="display:none">
-                <div class="thinking-dots">
-                    <span></span><span></span><span></span>
-                </div>
-                <span class="thinking-label">Thinking...</span>
-            </div>
-            <div id="speaking" style="display:none">
-                <div class="speak-bars">
-                    <div class="speak-bar"></div>
-                    <div class="speak-bar"></div>
-                    <div class="speak-bar"></div>
-                    <div class="speak-bar"></div>
-                    <div class="speak-bar"></div>
-                </div>
-                <span class="speaking-label">Speaking...</span>
-            </div>
-        </div>
-
-        <button class="mic-btn" id="mic-btn"
-            onmousedown="startRecording()"
-            onmouseup="stopRecording()"
-            ontouchstart="startRecording()"
-            ontouchend="stopRecording()">🎤</button>
-
-        <div class="status" id="status">Hold to speak · Release to send</div>
-
-    </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="analytics-section">
-    <div class="section-heading">
-        <span class="section-tag">HOW IT WORKS</span>
-        <h2>Real-time AI Pipeline</h2>
-        <p>4 AI systems working together in under 3 seconds</p>
-    </div>
-
-    <div class="analytics-grid">
-        <div class="analytics-card glass">
-            <h3>🎤</h3>
-            <h4>You Speak</h4>
-            <p>Hold mic and ask anything naturally</p>
-        </div>
-        <div class="analytics-card glass">
-            <h3>📝</h3>
-            <h4>Whisper STT</h4>
-            <p>Groq transcribes your voice instantly</p>
-        </div>
-        <div class="analytics-card glass">
-            <h3>🧠</h3>
-            <h4>LLaMA 3.1</h4>
-            <p>AI generates a smart coaching reply</p>
-        </div>
-        <div class="analytics-card glass">
-            <h3>🔊</h3>
-            <h4>Cartesia TTS</h4>
-            <p>Natural voice speaks the response back</p>
-        </div>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="site-footer">
-    <div class="footer-content">
-        <div class="footer-left">
-            <h3>🎓 Voice AI Study Coach</h3>
-            <p>Built with ❤️ by Anushka Priya </p>
-        </div>
-        <div class="footer-links">
-            <a href="https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH" target="_blank">GitHub ↗</a>
-            <a href="https://huggingface.co/spaces/AnushkaPriya/voice-coach" target="_blank">Hugging Faces ↗</a>
-        </div>
-    </div>
-</footer>
-
-<!-- SUMMARY MODAL -->
-<div id="summary-modal" style="display:none">
-    <div class="modal-box glass">
-        <div class="modal-title">📊 Session Summary</div>
-        <div class="summary-row">
-            <div class="summary-stat">
-                <div class="stat-label">Duration</div>
-                <div class="stat-value" id="sum-duration">—</div>
-            </div>
-            <div class="summary-stat">
-                <div class="stat-label">Questions</div>
-                <div class="stat-value" id="sum-questions">—</div>
-            </div>
-            <div class="summary-stat">
-                <div class="stat-label">Subject</div>
-                <div class="stat-value" id="sum-subject">—</div>
-            </div>
-        </div>
-        <div class="modal-section">
-            <div class="modal-section-label">✅ Topics Covered</div>
-            <div class="modal-section-text" id="sum-topics">—</div>
-        </div>
-        <div class="modal-section">
-            <div class="modal-section-label">⚠️ Needs Review</div>
-            <div class="modal-section-text" id="sum-weak">—</div>
-        </div>
-        <div class="modal-section">
-            <div class="modal-section-label">💡 Tonight's Tip</div>
-            <div class="modal-section-text" id="sum-tip">—</div>
-        </div>
-        <button class="primary-btn" onclick="confirmReset()" style="width:100%;margin-top:16px">Start New Session →</button>
-    </div>
-</div>
-
-<!-- HISTORY MODAL -->
-<div id="history-panel" style="display:none">
-    <div class="modal-box glass">
-        <div class="modal-header">
-            <span class="modal-title">📅 Past Sessions</span>
-            <button class="btn-close" onclick="toggleHistory()">×</button>
-        </div>
-        <div id="history-list">
-            <p class="no-history">Loading...</p>
-        </div>
-    </div>
-</div>
-
-<script src="/static/script.js?v=15"></script>
+  <script src="/static/script.js"></script>
 </body>
-</html>
