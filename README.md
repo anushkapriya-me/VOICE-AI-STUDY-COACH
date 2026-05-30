@@ -1,170 +1,305 @@
----
-title: Voice AI Study Coach
-emoji: 🎓
-colorFrom: purple
-colorTo: indigo
-sdk: docker
-pinned: false
----
+<div align="center">
 
+# 🎙️ VoiceCoach AI
 
+### Real-Time AI Voice Study Coach
 
+Talk to your study coach like a real mentor. Ask questions using your voice, get AI-powered explanations, and receive spoken responses instantly.
 
-# 🎓 Voice AI Study Coach
-> A real-time voice-powered AI tutoring system that listens, thinks, and speaks back — like a personal tutor available 24/7.
-[Live Demo](https://huggingface.co/spaces/AnushkaPriya/voice-coach)** · **[GitHub](https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH)**
+<br>
 
----
+🌐 **Live Demo:** https://anushkapriya-voice-coach.hf.space/
 
-## What is this?
+🐙 **GitHub:** https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH
 
-Voice AI Study Coach is an end-to-end voice AI application where students can **speak naturally** and get instant coaching responses — just like talking to a real tutor.
-No typing. No clicking. Just speak and learn.
+<br>
 
----
+<img width="100%" src="https://img.shields.io/badge/AI-Powered-41E6CF?style=for-the-badge" />
+<img width="100%" src="https://img.shields.io/badge/Voice-Assistant-79A7FF?style=for-the-badge" />
+<img width="100%" src="https://img.shields.io/badge/Flask-Backend-000000?style=for-the-badge&logo=flask" />
+<img width="100%" src="https://img.shields.io/badge/HuggingFace-Deployed-FFD21E?style=for-the-badge&logo=huggingface" />
 
-## Demo
-
-Student: "Can you explain recursion to me?"
-Coach:   "Recursion is when a function calls itself to solve
-a smaller version of the same problem. Think of it
-like Russian nesting dolls — each doll contains a
-smaller version of itself. Can you think of a
-real-world example where this pattern appears?"
-
-## How it works
-🎤 You speak
-↓
-📝 Groq Whisper  →  converts your voice to text (STT)
-↓
-🧠 LLaMA 3.1     →  generates a smart coaching reply (LLM)
-↓
-🔊 Cartesia      →  converts reply to natural speech (TTS)
-↓
-👂 You hear the response
-
-Round trip time: **under 3 seconds**
+</div>
 
 ---
 
-## Features
+## 🚀 About The Project
 
-- 🎤 **Push to talk** — hold mic button to speak, release to send
-- 🧠 **Smart coaching** — spaced repetition logic built into system prompt
-- 👨‍🏫 **4 AI coaches** — Dr. Rohan, Prof. Priya, Coach James, Dr. Olivia
-- 📚 **9 subjects** — Math, Science, History, Programming, Geography, English, Chemistry, Biology, or Any
-- 📊 **Session summary** — AI-generated summary of what you covered
-- 📅 **Session history** — remembers past sessions and reinforces weak areas
-- 🌐 **Deployed live** — accessible from any device, anywhere
+**VoiceCoach AI** is an AI-powered voice learning platform that allows students to interact with study coaches through natural speech.
+
+Instead of typing questions, users can simply click the microphone button and ask questions naturally. The application converts speech into text, processes it using Large Language Models, generates educational responses, and converts those responses back into realistic voice output.
+
+The goal is to create an interactive learning experience that feels like talking to a real mentor.
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Speech to Text | Groq Whisper | Voice → text transcription |
-| LLM | LLaMA 3.1 8B (via Groq) | Coaching brain |
-| Text to Speech | Cartesia Sonic-2 | Natural voice output |
-| Backend | Python + Flask | API server |
-| Frontend | HTML + CSS + JS | Web interface |
-| Deployment | Docker + Hugging Face Spaces | Live hosting |
+### 🎤 Real-Time Voice Interaction
+- Browser microphone recording
+- One-click voice conversations
+- Natural question answering
+
+### 🧠 AI Study Coaching
+- Subject-aware explanations
+- Active recall based responses
+- Personalized learning assistance
+- Follow-up questions for better understanding
+
+### 🔊 AI Voice Responses
+- Realistic text-to-speech output
+- Multiple coach voices
+- Instant audio playback
+
+### 👨‍🏫 Multiple AI Coaches
+
+| Coach | Speciality |
+|---------|-----------|
+| Dr. Rohan | Concept Builder |
+| Sarah | Motivation Mentor |
+| Aarav | Exam Strategist |
+| Maya | Interview Coach |
+
+### 📊 Session Tracking
+- Live timer
+- Question counter
+- Session monitoring
+- Learning analytics support
+
+### 🎨 Premium UI
+- Glassmorphism design
+- Responsive layout
+- Interactive animations
+- Mobile friendly
+- Modern portfolio-ready interface
 
 ---
 
-## Why Groq?
+# 🏗️ Architecture
 
-Groq runs LLMs on custom LPU hardware — **10x faster** than standard GPU inference. This is critical for voice apps where any delay over 500ms feels unnatural.
+```text
+User Voice
+    │
+    ▼
+Speech Recording (Browser)
+    │
+    ▼
+Flask Backend
+    │
+    ▼
+Groq Whisper
+(Speech → Text)
+    │
+    ▼
+Llama 3.1 8B
+(AI Response)
+    │
+    ▼
+Cartesia TTS
+(Text → Voice)
+    │
+    ▼
+Audio Response
+```
 
 ---
 
-## Project Structure
-voice-coach/
-├── app.py              # Flask backend — main API
-├── main.py             # Local terminal version
-├── templates/
-│   └── index.html      # Frontend UI
-├── static/
-│   ├── style.css       # Styling
-│   └── script.js       # Audio pipeline + UI logic
-├── requirements.txt    # Python dependencies
-└── Dockerfile          # Container config for deployment
+# 🛠️ Tech Stack
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+## Backend
+
+- Python
+- Flask
+
+## AI Models
+
+### Groq
+- Whisper Large V3 Turbo
+- Llama 3.1 8B Instant
+
+### Cartesia
+- Sonic 2 Text-To-Speech
+
+## Deployment
+
+- Hugging Face Spaces
 
 ---
 
-## Local Setup
+# 📂 Project Structure
 
-**1. Clone the repo**
+```bash
+VOICE-AI-STUDY-COACH
+│
+├── app.py
+│
+├── templates
+│   └── index.html
+│
+├── static
+│   ├── style.css
+│   ├── script.js
+│   └── assets
+│
+├── session_history.json
+├── requirements.txt
+├── .env
+└── README.md
+```
+
+---
+
+# ⚙️ Installation
+
+### Clone Repository
+
 ```bash
 git clone https://github.com/anushkapriya-me/VOICE-AI-STUDY-COACH.git
+```
+
+### Move Into Project
+
+```bash
 cd VOICE-AI-STUDY-COACH
 ```
 
-**2. Install dependencies**
+### Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**3. Add API keys — create a `.env` file**
-GROQ_API_KEY=your_groq_key_here
-CARTESIA_API_KEY=your_cartesia_key_here
+### Create .env File
 
-**4. Run**
+```env
+GROQ_API_KEY=your_api_key
+CARTESIA_API_KEY=your_api_key
+```
+
+### Run Application
+
 ```bash
 python app.py
 ```
 
-**5. Open** `http://localhost:7860`
+Application runs on:
 
----
-
-## API Keys (all free)
-
-| Service | Get key at | Free tier |
-|---|---|---|
-| Groq | console.groq.com | Unlimited (rate limited) |
-| Cartesia | play.cartesia.ai | 1000 chars/month |
-
----
-
-## Engineering highlights
-
-- **Chunked audio streaming** — browser records in 100ms chunks for low latency
-- **In-memory transcription** — audio never written to disk, processed via BytesIO buffer
-- **Base64 audio transfer** — TTS output sent as base64 to avoid filesystem issues on cloud
-- **Session state management** — full conversation history sent with every request
-- **Spaced repetition** — weak topics from past sessions injected into system prompt
-- **Voice activity detection** — Web Audio API used to show waveform only when speaking
-- **Minimum recording guard** — ignores accidental taps under 1.5 seconds
-
----
-
-## Deployment
-
-Deployed on **Hugging Face Spaces** using Docker.
-
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 7860
-CMD ["python", "app.py"]
+```bash
+http://localhost:7860
 ```
 
-API keys stored as **Hugging Face Secrets** — never exposed in code.
+---
+
+# 🎯 How It Works
+
+### Step 1
+Select your preferred AI Coach.
+
+### Step 2
+Click the microphone button.
+
+### Step 3
+Ask your academic question.
+
+### Step 4
+Audio is sent to Flask Backend.
+
+### Step 5
+Groq Whisper transcribes the speech.
+
+### Step 6
+Llama 3.1 generates a study-focused answer.
+
+### Step 7
+Cartesia converts the response into speech.
+
+### Step 8
+VoiceCoach AI plays the answer back instantly.
 
 ---
 
-## Built by
+# 🔥 Key Highlights
 
-**Anushka Priya** — built from scratch in one week as a learning project.
+✅ Real-Time Voice AI
 
-> *"Started knowing nothing about voice AI. Built a complete real-time voice pipeline by the end."*
+✅ Speech-To-Text Integration
+
+✅ Text-To-Speech Integration
+
+✅ Multiple Coach Personalities
+
+✅ Responsive Portfolio UI
+
+✅ Session Memory Support
+
+✅ Hugging Face Deployment
+
+✅ Full Stack AI Application
 
 ---
 
-## License
+# 📸 Preview
 
-MIT — free to use, modify and build upon.
+### Landing Page
+
+- Hero Voice Interface
+- Animated UI
+- Coach Showcase
+- Modern Dashboard
+
+### Voice Workspace
+
+- Live Chat Window
+- Voice Controls
+- Session Metrics
+- AI Coach Switching
+
+---
+
+# 🚀 Future Improvements
+
+- User Authentication
+- Progress Tracking
+- Study Streaks
+- AI Generated Quizzes
+- Flashcard Creation
+- PDF Notes Upload
+- Topic Analytics Dashboard
+- Multi-language Support
+
+---
+
+# 👩‍💻 Author
+
+## Anushka Priya
+
+Aspiring Software Engineer passionate about:
+
+- Artificial Intelligence
+- Machine Learning
+- Full Stack Development
+- Educational Technology
+
+### Connect With Me
+
+GitHub:
+https://github.com/anushkapriya-me
+
+Live Demo:
+https://anushkapriya-voice-coach.hf.space/
+
+---
+
+<div align="center">
+
+### ⭐ If you liked this project, consider giving it a star ⭐
+
+Built with ❤️ by Anushka Priya
+
+</div>
