@@ -1,4 +1,3 @@
-Here is the polished and corrected `README.md`. I have properly formatted the markdown, fixed the broken code block structures from your draft, and updated the screenshots section using the exact filenames from your uploaded image (`Landing_page.png`, `Meet_ur_Coaches.png`, and `Coach_Interaction.png`).
 
 ```markdown
 <div align="center">
